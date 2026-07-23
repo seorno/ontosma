@@ -1,0 +1,1516 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transcription & Translation Cascade — Ontosma</title>
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              ink: 'var(--ink)',
+              panel: 'var(--panel)',
+              'panel-2': 'var(--panel-2)',
+              cell: 'var(--cell)',
+              'cell-soft': 'var(--cell-soft)',
+              fate: 'var(--fate)',
+              text: 'var(--text)',
+              muted: 'var(--muted)',
+              line: 'var(--line)',
+            },
+            fontFamily: {
+              sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+              serif: ['var(--font-serif)', 'Georgia', 'serif'],
+              mono: ['var(--font-mono)', 'SFMono-Regular', 'monospace'],
+            }
+          }
+        }
+      }
+    </script>
+    <!-- Google Fonts for Fraunces, Inter and JetBrains Mono -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap">
+    <!-- Shared Brand Stylesheet -->
+    <link rel="stylesheet" href="../assets/style.css">
+    <!-- GSAP & ScrollTrigger CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+      .active-tab-btn {
+        background-color: var(--cell) !important;
+        color: #ffffff !important;
+        border-color: var(--cell) !important;
+      }
+      .concept-card-item {
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .concept-card-item:hover {
+        border-color: var(--cell);
+        background-color: rgba(234, 88, 12, 0.01);
+      }
+    </style>
+  </head>
+  <body class="bg-ink text-text selection:bg-cell/30 selection:text-cell min-h-screen flex flex-col">
+    
+    <!-- Header Navigation -->
+    <header class="glass-header fixed top-0 left-0 w-full z-50">
+      <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <a id="nav-logo" href="../index.html" class="flex items-center gap-2 group">
+          <span class="font-serif text-xl md:text-2xl font-bold tracking-tight text-text group-hover:text-cell transition-colors uppercase">
+            Ontosma
+          </span>
+          <span class="w-2 h-2 bg-cell border border-stone-950"></span>
+        </a>
+        
+        <nav class="hidden md:flex items-center gap-8 font-mono text-sm tracking-wider">
+          <a id="nav-link-newsletter" href="../newsletter.html" class="text-muted hover:text-cell transition-colors py-2">DAILY DIGEST</a>
+          <a id="nav-link-columns" href="../columns.html" class="text-muted hover:text-cell transition-colors py-2">COLUMNS</a>
+          <a id="nav-link-concepts" href="../concepts.html" class="text-cell transition-colors py-2 border-b-2 border-cell">CONCEPTS</a>
+          <a id="nav-link-about" href="../index.html#about" class="text-muted hover:text-cell transition-colors py-2">ABOUT</a>
+          <a id="nav-cta" href="../index.html#newsletter" class="btn-pill btn-pill-secondary py-2 px-5 text-xs">SUBSCRIBE</a>
+        </nav>
+
+        <button id="mobile-menu-toggle" class="md:hidden text-muted hover:text-cell p-2" aria-label="Toggle Menu">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Mobile Navigation Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 bg-ink z-40 flex-col justify-center items-center gap-8 font-mono text-lg tracking-widest hidden overflow-y-auto">
+      <button id="mobile-menu-close" class="absolute top-6 right-6 text-muted hover:text-cell p-2" aria-label="Close Menu">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      <a id="mobile-link-newsletter" href="../newsletter.html" class="text-muted hover:text-cell transition-colors">DAILY DIGEST</a>
+      <a id="mobile-link-columns" href="../columns.html" class="text-muted hover:text-cell transition-colors">COLUMNS</a>
+      <a id="mobile-link-concepts" href="../concepts.html" class="text-cell transition-colors font-bold">CONCEPTS</a>
+      <a id="mobile-link-about" href="../index.html#about" class="text-muted hover:text-cell transition-colors">ABOUT</a>
+    </div>
+
+    <!-- MAIN VIEW -->
+    <main class="flex-grow">
+      
+      <!-- 1. INTRO HERO -->
+      <section id="concept-hero" class="relative h-screen flex flex-col justify-center items-center text-center px-6 overflow-hidden bg-ink">
+        <div class="absolute inset-0 svg-bg-grid opacity-30 pointer-events-none"></div>
+        <div class="absolute w-[500px] h-[500px] rounded-full glowing-orb opacity-10 pointer-events-none"></div>
+
+        <div class="max-w-4xl mx-auto space-y-6 relative z-10 mt-16 animate-fade-in">
+          <span class="font-mono text-xs tracking-[0.25em] text-cell bg-cell-soft border border-line px-4 py-1.5 uppercase font-semibold">
+            MOLECULAR GENETICS & EXPRESSION CASCADES
+          </span>
+          <h1 class="text-5xl md:text-7xl text-text font-normal leading-tight font-serif">
+            Transcription & Translation
+          </h1>
+          <p class="text-xl md:text-2xl font-serif italic text-fate">
+            "A continuous molecular journey from silent chromatin to mature folded protein."
+          </p>
+          <p class="text-muted text-sm md:text-base max-w-2xl mx-auto leading-relaxed font-sans">
+            Follow the central flow of biological code. Watch RNA polymerase II read genetic templates within the high-fidelity package of the nucleus, export finished transcripts through the nuclear envelope, and assemble complex proteins inside ribosomal translation centers.
+          </p>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 flex flex-col items-center gap-2 pointer-events-none">
+          <span class="font-mono text-[9px] tracking-widest text-muted uppercase">SCROLL DOWN TO INITIATE THE MOLECULAR TRAJECTORY</span>
+          <div class="w-1 h-8 rounded-full bg-line relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1/2 bg-cell rounded-full animate-bounce"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. SCROLLPINNED INTERACTIVE SCROLLYTELLING BLOCK (450vh height for pristine vertical progress) -->
+      <section id="scrolly-trigger" class="relative h-[450vh] bg-[#ffffff] border-t border-line">
+        <div class="scrolly-sticky">
+          <!-- Ambient Grid Background -->
+          <div class="absolute inset-0 svg-bg-grid opacity-40"></div>
+          
+          <div class="w-full max-w-7xl mx-auto px-6 relative flex flex-col lg:flex-row items-center justify-between gap-12 h-full py-16">
+            
+            <!-- Left Column: Sticky Interactive SVG Visualization Stage (55%) -->
+            <div class="w-full lg:w-[55%] h-[58vh] min-h-[500px] lg:h-[82vh] lg:min-h-[740px] flex flex-col relative bg-panel border border-line rounded-3xl p-5 md:p-6 shadow-sm overflow-hidden justify-between">
+              
+              <!-- Stage Metadata Indicator -->
+              <div class="flex justify-between items-center pb-4 border-b border-line/60">
+                <div class="space-y-1">
+                  <span class="font-mono text-[9px] text-cell tracking-widest uppercase font-bold">ELECTRON GRAPH DIRECT VIEW</span>
+                  <h3 id="current-compartment-title" class="text-stone-900 text-lg font-normal font-serif tracking-tight">Active Transcription Bubble</h3>
+                </div>
+                <div class="font-mono text-[9px] text-stone-600 bg-stone-100 border border-line px-3 py-1 rounded-full uppercase font-semibold">
+                  COMPARTMENT: <span id="current-compartment-tag" class="text-cell font-bold">NUCLEUS</span>
+                </div>
+              </div>              <!-- ONE Unified SVG element with Transcription and Translation Groups -->
+              <div class="flex-grow flex items-center justify-center my-3 min-h-[260px] lg:min-h-[380px] relative overflow-hidden bg-white/50 rounded-2xl border border-line/30 shadow-inner">
+                <svg id="unified-cascade-svg" class="w-full h-full" viewBox="0 0 600 400" fill="none" preserveAspectRatio="xMidYMid meet">
+                  
+                  <!-- Definitions and Gradients -->
+                  <defs>
+                    <!-- Beautiful 3D spherical shading gradients for amino acids -->
+                    <radialGradient id="amino-blue" cx="35%" cy="35%" r="65%">
+                      <stop offset="0%" stop-color="#93c5fd" />
+                      <stop offset="40%" stop-color="#3b82f6" />
+                      <stop offset="100%" stop-color="#1d4ed8" />
+                    </radialGradient>
+                    <radialGradient id="amino-orange" cx="35%" cy="35%" r="65%">
+                      <stop offset="0%" stop-color="#fdba74" />
+                      <stop offset="40%" stop-color="#f97316" />
+                      <stop offset="100%" stop-color="#c2410c" />
+                    </radialGradient>
+                    <radialGradient id="amino-green" cx="35%" cy="35%" r="65%">
+                      <stop offset="0%" stop-color="#86efac" />
+                      <stop offset="40%" stop-color="#22c55e" />
+                      <stop offset="100%" stop-color="#15803d" />
+                    </radialGradient>
+                    <radialGradient id="amino-yellow" cx="35%" cy="35%" r="65%">
+                      <stop offset="0%" stop-color="#fef08a" />
+                      <stop offset="40%" stop-color="#eab308" />
+                      <stop offset="100%" stop-color="#a16207" />
+                    </radialGradient>
+                    <radialGradient id="amino-purple" cx="35%" cy="35%" r="65%">
+                      <stop offset="0%" stop-color="#d8b4fe" />
+                      <stop offset="40%" stop-color="#a855f7" />
+                      <stop offset="100%" stop-color="#7e22ce" />
+                    </radialGradient>
+                    <radialGradient id="amino-red" cx="35%" cy="35%" r="65%">
+                      <stop offset="0%" stop-color="#fca5a5" />
+                      <stop offset="40%" stop-color="#ef4444" />
+                      <stop offset="100%" stop-color="#b91c1c" />
+                    </radialGradient>
+                    <radialGradient id="amino-pink" cx="35%" cy="35%" r="65%">
+                      <stop offset="0%" stop-color="#fbcfe8" />
+                      <stop offset="40%" stop-color="#ec4899" />
+                      <stop offset="100%" stop-color="#be185d" />
+                    </radialGradient>
+
+                    <!-- DNA double helix and helper gradients -->
+                    <linearGradient id="dnaGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="#3b82f6" stop-opacity="1.0" />
+                      <stop offset="100%" stop-color="#1d4ed8" stop-opacity="1.0" />
+                    </linearGradient>
+                    <linearGradient id="polGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stop-color="#ffedd5" stop-opacity="1.0" />
+                      <stop offset="100%" stop-color="#ea580c" stop-opacity="1.0" />
+                    </linearGradient>
+                    <linearGradient id="riboLgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stop-color="#f3e8ff" stop-opacity="1.0" />
+                      <stop offset="100%" stop-color="#a855f7" stop-opacity="1.0" />
+                    </linearGradient>
+                    <linearGradient id="riboSmGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stop-color="#e0e7ff" stop-opacity="1.0" />
+                      <stop offset="100%" stop-color="#6366f1" stop-opacity="1.0" />
+                    </linearGradient>
+                    <filter id="glow" x="-25%" y="-25%" width="150%" height="150%">
+                      <feGaussianBlur stdDeviation="3" result="blur" />
+                      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
+                  </defs>
+
+                  <!-- INVISIBLE mRNA MASTER REFERENCE TRACK (utilised for exact getmRNAPath sampling) -->
+                  <path id="mrna-full-track" d="M 280,122 C 200,125 100,170 100,240 C 100,310 180,345 350,335 C 440,325 520,265 590,200 C 650,140 710,180 770,250 L 920,250 C 970,250 1020,260 1070,280" fill="none" stroke="none" />
+
+                  <!-- ============================================ -->
+                  <!-- SCENE 1: TRANSCRIPTION SCENE (NUCLEUS, x:0-600) -->
+                  <!-- ============================================ -->
+                  <g id="transcription-scene" style="transition: opacity 0.4s ease-out;">
+                    <!-- Ambient chromatin background loop -->
+                    <path d="M 30,120 Q 100,50 180,120" stroke="var(--line)" stroke-width="1.5" stroke-dasharray="3 3" fill="none" />
+                    <path d="M 420,120 Q 490,50 560,120" stroke="var(--line)" stroke-width="1.5" stroke-dasharray="3 3" fill="none" />
+
+                    <!-- DNA Guide Path for Pol II -->
+                    <path id="dna-guide-path" d="M 180,120 L 420,120" fill="none" stroke="none" />
+
+                    <!-- DNA Double Helix: Left twisted segment -->
+                    <g id="dna-left-helix" class="opacity-80">
+                      <path d="M 40,120 Q 75,90 110,120 T 180,120" stroke="url(#dnaGrad)" stroke-width="2.5" fill="none" />
+                      <path d="M 40,120 Q 75,150 110,120 T 180,120" stroke="url(#dnaGrad)" stroke-width="2.5" fill="none" />
+                      <!-- Left rungs -->
+                      <line x1="60" y1="108" x2="60" y2="132" stroke="#93c5fd" stroke-width="1.5" />
+                      <line x1="90" y1="120" x2="90" y2="120" stroke="#fca5a5" stroke-width="1.5" />
+                      <line x1="125" y1="108" x2="125" y2="132" stroke="#86efac" stroke-width="1.5" />
+                      <line x1="155" y1="120" x2="155" y2="120" stroke="#fca5a5" stroke-width="1.5" />
+                    </g>
+
+                    <!-- DNA Double Helix: Right twisted segment -->
+                    <g id="dna-right-helix" class="opacity-80">
+                      <path d="M 420,120 Q 455,90 490,120 T 560,120" stroke="url(#dnaGrad)" stroke-width="2.5" fill="none" />
+                      <path d="M 420,120 Q 455,150 490,120 T 560,120" stroke="url(#dnaGrad)" stroke-width="2.5" fill="none" />
+                      <!-- Right rungs -->
+                      <line x1="440" y1="120" x2="440" y2="120" stroke="#93c5fd" stroke-width="1.5" />
+                      <line x1="470" y1="108" x2="470" y2="132" stroke="#86efac" stroke-width="1.5" />
+                      <line x1="505" y1="120" x2="505" y2="120" stroke="#fdba74" stroke-width="1.5" />
+                      <line x1="535" y1="108" x2="535" y2="132" stroke="#93c5fd" stroke-width="1.5" />
+                    </g>
+
+                    <!-- Active DNA Transcription Bubble Strands -->
+                    <!-- Upper Strand (Coding) -->
+                    <path id="dna-upper-strand" d="M 180,120 C 210,65 260,50 300,50 C 340,50 390,65 420,120" stroke="url(#dnaGrad)" stroke-width="3" fill="none" />
+                    <!-- Lower Strand (Template) -->
+                    <path id="dna-lower-strand" d="M 180,120 C 210,175 260,190 300,190 C 340,190 390,175 420,120" stroke="url(#dnaGrad)" stroke-width="3" fill="none" />
+
+                    <!-- Base Pairing Blocks in transcription bubble (Textbook schematic style) -->
+                    <g id="dna-bubble-rungs" opacity="0.95">
+                      <!-- Coding strand bases (pointing downwards) -->
+                      <rect x="208" y="52" width="4" height="12" fill="#ef4444" rx="1" /> <text x="210" y="74" font-family="sans-serif" font-weight="bold" font-size="8" fill="#ef4444" text-anchor="middle">G</text> <!-- G -->
+                      <rect x="238" y="50" width="4" height="12" fill="#3b82f6" rx="1" /> <text x="240" y="72" font-family="sans-serif" font-weight="bold" font-size="8" fill="#3b82f6" text-anchor="middle">C</text> <!-- C -->
+                      <rect x="268" y="54" width="4" height="12" fill="#ef4444" rx="1" /> <text x="270" y="76" font-family="sans-serif" font-weight="bold" font-size="8" fill="#ef4444" text-anchor="middle">G</text> <!-- G -->
+                      <rect x="298" y="55" width="4" height="12" fill="#eab308" rx="1" /> <text x="300" y="77" font-family="sans-serif" font-weight="bold" font-size="8" fill="#eab308" text-anchor="middle">A</text> <!-- A -->
+                      <rect x="328" y="54" width="4" height="12" fill="#a855f7" rx="1" /> <text x="330" y="76" font-family="sans-serif" font-weight="bold" font-size="8" fill="#a855f7" text-anchor="middle">U</text> <!-- U -->
+                      <rect x="358" y="50" width="4" height="12" fill="#eab308" rx="1" /> <text x="360" y="72" font-family="sans-serif" font-weight="bold" font-size="8" fill="#eab308" text-anchor="middle">A</text> <!-- A -->
+                      <rect x="388" y="52" width="4" height="12" fill="#ef4444" rx="1" /> <text x="390" y="74" font-family="sans-serif" font-weight="bold" font-size="8" fill="#ef4444" text-anchor="middle">G</text> <!-- G -->
+
+                      <!-- Template strand bases (pointing upwards) -->
+                      <rect x="208" y="166" width="4" height="12" fill="#3b82f6" rx="1" /> <text x="210" y="162" font-family="sans-serif" font-weight="bold" font-size="8" fill="#3b82f6" text-anchor="middle">C</text> <!-- C -->
+                      <rect x="238" y="168" width="4" height="12" fill="#ef4444" rx="1" /> <text x="240" y="164" font-family="sans-serif" font-weight="bold" font-size="8" fill="#ef4444" text-anchor="middle">G</text> <!-- G -->
+                      <rect x="268" y="166" width="4" height="12" fill="#3b82f6" rx="1" /> <text x="270" y="162" font-family="sans-serif" font-weight="bold" font-size="8" fill="#3b82f6" text-anchor="middle">C</text> <!-- C -->
+                      <rect x="298" y="163" width="4" height="12" fill="#ec4899" rx="1" /> <text x="300" y="159" font-family="sans-serif" font-weight="bold" font-size="8" fill="#ec4899" text-anchor="middle">T</text> <!-- T -->
+                      <rect x="328" y="166" width="4" height="12" fill="#eab308" rx="1" /> <text x="330" y="162" font-family="sans-serif" font-weight="bold" font-size="8" fill="#eab308" text-anchor="middle">A</text> <!-- A -->
+                      <rect x="358" y="168" width="4" height="12" fill="#ec4899" rx="1" /> <text x="360" y="164" font-family="sans-serif" font-weight="bold" font-size="8" fill="#ec4899" text-anchor="middle">T</text> <!-- T -->
+                      <rect x="388" y="166" width="4" height="12" fill="#3b82f6" rx="1" /> <text x="390" y="162" font-family="sans-serif" font-weight="bold" font-size="8" fill="#3b82f6" text-anchor="middle">C</text> <!-- C -->
+                    </g>
+
+                    <!-- Pioneer Factor / Polymerase II Anchor wedge (moves along bubble) -->
+                    <g id="pioneer-wedge" transform="translate(180, 120)">
+                      <polygon points="0,0 12,-16 24,0" fill="var(--cell)" />
+                      <circle cx="12" cy="-6" r="10" fill="var(--cell-soft)" stroke="var(--cell)" stroke-width="1" />
+                      <text x="12" y="-3" font-family="sans-serif" font-size="5" fill="var(--fate)" font-weight="bold" text-anchor="middle">INIT</text>
+                    </g>
+
+                    <!-- RNA Polymerase II enzyme complex (slides along the template strand) -->
+                    <g id="pol-ii-complex" transform="translate(180, 120)">
+                      <ellipse cx="0" cy="0" rx="36" ry="28" fill="url(#polGrad)" stroke="var(--cell)" stroke-width="1.5" />
+                      <circle cx="0" cy="0" r="10" fill="var(--cell-soft)" stroke="var(--cell)" stroke-width="1" />
+                      <!-- Spinning active core element -->
+                      <circle cx="0" cy="0" r="2.5" fill="var(--fate)" />
+                      <text x="0" y="14" font-family="monospace" font-size="7" fill="var(--fate)" font-weight="bold" text-anchor="middle">POL II</text>
+                    </g>
+
+                    <!-- Textbook labels pointing to Transcription features -->
+                    <g id="transcription-textbook-labels" class="opacity-90">
+                      <!-- Transcription Title Label -->
+                      <text x="300" y="28" font-family="sans-serif" font-size="12" font-weight="bold" fill="var(--text)" text-anchor="middle" letter-spacing="0.1em">TRANSCRIPTION</text>
+                      
+                      <!-- DNA label -->
+                      <text x="80" y="85" font-family="sans-serif" font-size="10" font-weight="bold" fill="var(--text)" text-anchor="middle">DNA</text>
+                      
+                      <!-- Codon bracket box inside bubble -->
+                      <rect x="255" y="60" width="30" height="24" fill="none" stroke="var(--text)" stroke-width="1.2" rx="2" />
+                      <line x1="270" y1="60" x2="270" y2="46" stroke="var(--text)" stroke-width="1" />
+                      <text x="270" y="42" font-family="sans-serif" font-size="8" font-weight="bold" fill="var(--text)" text-anchor="middle">Codon</text>
+
+                      <!-- Base pair label with pointer -->
+                      <line x1="330" y1="162" x2="350" y2="185" stroke="var(--muted)" stroke-width="1" />
+                      <circle cx="330" cy="162" r="2" fill="var(--muted)" />
+                      <text x="355" y="192" font-family="sans-serif" font-size="8" font-weight="bold" fill="var(--text)" text-anchor="start">Base pair</text>
+
+                      <!-- Pre-mRNA label with pointer -->
+                      <line x1="100" y1="240" x2="110" y2="210" stroke="var(--muted)" stroke-width="1" />
+                      <circle cx="110" cy="210" r="2" fill="var(--muted)" />
+                      <text x="100" y="252" font-family="sans-serif" font-size="9" font-weight="bold" fill="var(--text)" text-anchor="middle">Pre-mRNA</text>
+
+                      <!-- Flow Helper Arrows (Pre-mRNA -> mRNA) -->
+                      <path d="M 120,265 L 145,295" stroke="var(--text)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                      <polygon points="145,295 137,293 143,287" fill="var(--text)" />
+
+                      <!-- mRNA label -->
+                      <text x="195" y="342" font-family="sans-serif" font-size="9" font-weight="bold" fill="var(--text)" text-anchor="middle">mRNA</text>
+                      <line x1="195" y1="332" x2="210" y2="310" stroke="var(--muted)" stroke-width="1" />
+                      <circle cx="210" cy="310" r="2" fill="var(--muted)" />
+
+                      <!-- Flow Helper Arrow (mRNA -> Ribosome) -->
+                      <path d="M 235,348 L 275,348" stroke="var(--text)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                      <polygon points="275,348 267,344 267,352" fill="var(--text)" />
+
+                      <!-- Cell nucleus area label -->
+                      <text x="510" y="270" font-family="sans-serif" font-size="10" font-weight="bold" fill="var(--muted)" letter-spacing="0.05em">Cell nucleus</text>
+                    </g>
+                  </g>
+
+                  <!-- ============================================ -->
+                  <!-- SHARED CENTRAL BOUNDARY: NUCLEAR ENVELOPE & NPC -->
+                  <!-- ============================================ -->
+                  <g id="shared-nuclear-envelope" class="opacity-80">
+                    <!-- Elegant double-walled curved nuclear envelope running from top to bottom at x=600 -->
+                    <!-- Outer Membrane -->
+                    <path d="M 590,0 Q 580,140 580,165 M 580,235 Q 580,260 590,400" stroke="#93c5fd" stroke-width="6" stroke-linecap="round" fill="none" />
+                    <!-- Inner Membrane -->
+                    <path d="M 610,0 Q 600,140 600,165 M 600,235 Q 600,260 610,400" stroke="#60a5fa" stroke-width="4" stroke-linecap="round" fill="none" />
+                    
+                    <!-- Selective NPC nuclear pore channel structure centered at y = 200 -->
+                    <g id="nuclear-pore-structure" transform="translate(590, 200)">
+                      <rect x="-14" y="-35" width="28" height="6" rx="2" fill="var(--panel-2)" stroke="var(--muted)" stroke-width="1" />
+                      <rect x="-14" y="29" width="28" height="6" rx="2" fill="var(--panel-2)" stroke="var(--muted)" stroke-width="1" />
+                      <path d="M -12,-29 C -2,-20 0,-10 0,0 C 0,10 -2,20 -12,29" stroke="var(--cell)" stroke-width="2" fill="none" />
+                      <path d="M 12,-29 C 2,-20 0,-10 0,0 C 0,10 2,20 12,29" stroke="var(--cell)" stroke-width="2" fill="none" />
+                      
+                      <!-- FG-nucleoporin filaments mesh -->
+                      <path d="M 0,-25 C -5,-10 -5,10 0,25" stroke="var(--cell-soft)" stroke-dasharray="2 2" stroke-width="1.5" fill="none" />
+                      <text x="24" y="3" font-family="sans-serif" font-size="8" font-weight="bold" fill="var(--text)" transform="rotate(-90 24 3)" text-anchor="middle">Nuclear Pore</text>
+                    </g>
+                  </g>
+
+                  <!-- ============================================ -->
+                  <!-- STAR OF THE SHOW: CONTINUOUS DYNAMIC mRNA    -->
+                  <!-- ============================================ -->
+                  <path id="continuous-mrna" stroke="#fbbf24" stroke-width="3" fill="none" stroke-linecap="round" filter="url(#glow)" />
+
+                  <!-- ============================================ -->
+                  <!-- SCENE 2: TRANSLATION SCENE (CYTOPLASM, x:600-1200) -->
+                  <!-- ============================================ -->
+                  <g id="translation-scene" transform="translate(600, 0)" style="opacity: 0; transition: opacity 0.4s ease-out;">
+                    <!-- Ambient cytoplasm grid lines -->
+                    <path d="M 80,40 Q 200,80 150,150 T 400,100" stroke="var(--line)" stroke-width="1" fill="none" />
+                    
+                    <!-- mRNA track running through cytoplasm into ribosome -->
+                    <g id="translation-mrna-track">
+                      <!-- Base block letters inside Ribosome cleft (centered at x = 240, y = 250) -->
+                      <g id="translation-cleft-bases" opacity="0.9">
+                        <rect x="175" y="246" width="6" height="10" fill="#3b82f6" rx="1" /> <text x="178" y="254" font-family="sans-serif" font-size="7" font-weight="bold" fill="white" text-anchor="middle">C</text>
+                        <rect x="190" y="246" width="6" height="10" fill="#ef4444" rx="1" /> <text x="193" y="254" font-family="sans-serif" font-size="7" font-weight="bold" fill="white" text-anchor="middle">G</text>
+                        <rect x="205" y="246" width="6" height="10" fill="#a855f7" rx="1" /> <text x="208" y="254" font-family="sans-serif" font-size="7" font-weight="bold" fill="white" text-anchor="middle">U</text>
+                        
+                        <rect x="225" y="246" width="6" height="10" fill="#ef4444" rx="1" /> <text x="228" y="254" font-family="sans-serif" font-size="7" font-weight="bold" fill="white" text-anchor="middle">G</text>
+                        <rect x="240" y="246" width="6" height="10" fill="#a855f7" rx="1" /> <text x="243" y="254" font-family="sans-serif" font-size="7" font-weight="bold" fill="white" text-anchor="middle">U</text>
+                        <rect x="255" y="246" width="6" height="10" fill="#ef4444" rx="1" /> <text x="258" y="254" font-family="sans-serif" font-size="7" font-weight="bold" fill="white" text-anchor="middle">G</text>
+
+                        <rect x="275" y="246" width="6" height="10" fill="#eab308" rx="1" /> <text x="278" y="254" font-family="sans-serif" font-size="7" font-weight="bold" fill="white" text-anchor="middle">A</text>
+                        <rect x="290" y="246" width="6" height="10" fill="#a855f7" rx="1" /> <text x="293" y="254" font-family="sans-serif" font-size="7" font-weight="bold" fill="white" text-anchor="middle">U</text>
+                        <rect x="305" y="246" width="6" height="10" fill="#ef4444" rx="1" /> <text x="308" y="254" font-family="sans-serif" font-size="7" font-weight="bold" fill="white" text-anchor="middle">G</text>
+                      </g>
+                    </g>
+
+                    <!-- Beautiful 3D Ribosome Assembly (Centered at local x = 240, y = 250) -->
+                    <g id="ribosome-factory" transform="translate(240, 250)">
+                      <!-- 60S Large Subunit (On top of cleft) -->
+                      <path d="M -70,-5 Q -80,-80 0,-80 Q 80,-80 70,-5 Q 40,-15 -10,-15 Q -40,-15 -70,-5 Z" fill="url(#riboLgGrad)" stroke="var(--muted)" stroke-width="1.8" />
+                      <!-- Exit Tunnel inside large subunit -->
+                      <path d="M -18,-15 Q -18,-50 -5,-65" stroke="var(--line)" stroke-width="12" stroke-linecap="round" fill="none" />
+
+                      <!-- 40S Small Subunit (On bottom of cleft) -->
+                      <rect x="-65" y="10" width="130" height="28" rx="10" fill="url(#riboSmGrad)" stroke="var(--muted)" stroke-width="1.5" />
+                      
+                      <!-- Ribosome Sites Labels -->
+                      <text x="-32" y="-24" font-family="sans-serif" font-size="8" font-weight="bold" fill="var(--muted)" text-anchor="middle">E</text>
+                      <text x="0" y="-24" font-family="sans-serif" font-size="8" font-weight="bold" fill="var(--muted)" text-anchor="middle">P</text>
+                      <text x="32" y="-24" font-family="sans-serif" font-size="8" font-weight="bold" fill="var(--muted)" text-anchor="middle">A</text>
+                    </g>
+
+                    <!-- Active seated tRNA (P-Site, connected to polypeptide chain) -->
+                    <g id="seated-trna" transform="translate(240, 222)">
+                      <path d="M 0,10 L -6,-10 L 0,-25 L 6,-10 Z" fill="#6ee7b7" stroke="#059669" stroke-width="1.8" />
+                      <!-- Seated Amino Acid sphere (Orange) -->
+                      <circle cx="0" cy="-30" r="7.5" fill="url(#amino-orange)" filter="url(#shadow)" />
+                    </g>
+
+                    <!-- Growing Polypeptide Chain (Winding string of colourful 3D spheres emerging from exit tunnel) -->
+                    <g id="growing-chain-assembly">
+                      <!-- Connection line -->
+                      <path id="polypeptide-chain-line" d="M 238,185 C 235,140 280,120 310,130 C 340,140 370,110 395,115" stroke="var(--muted)" stroke-dasharray="3 3" stroke-width="1.5" fill="none" />
+                      <!-- Interactive poly chain path with stroke dash offset -->
+                      <path id="polypeptide-chain" d="M 238,185 C 235,140 280,120 310,130 C 340,140 370,110 395,115" stroke="var(--cell)" stroke-width="15" stroke-dasharray="10 10" stroke-linecap="round" fill="none" opacity="0" />
+                      
+                      <!-- Colorful amino acid spheres along the chain path (Replicates Winslow image chain) -->
+                      <g id="growing-chain-spheres" opacity="0.95">
+                        <circle cx="238" cy="184" r="7" fill="url(#amino-blue)" />
+                        <circle cx="236" cy="162" r="7" fill="url(#amino-orange)" />
+                        <circle cx="244" cy="142" r="7" fill="url(#amino-green)" />
+                        <circle cx="264" cy="130" r="7" fill="url(#amino-yellow)" />
+                        <circle cx="288" cy="128" r="7" fill="url(#amino-purple)" />
+                        <circle cx="310" cy="132" r="7" fill="url(#amino-red)" />
+                        <circle cx="334" cy="136" r="7" fill="url(#amino-pink)" />
+                        <circle cx="355" cy="128" r="7" fill="url(#amino-blue)" />
+                        <circle cx="374" cy="118" r="7" fill="url(#amino-orange)" />
+                        <circle cx="395" cy="115" r="7" fill="url(#amino-green)" />
+                      </g>
+                    </g>
+
+                    <!-- Docking tRNA molecule (animates downwards and locks into A-site at local x: 272, y: 222) -->
+                    <g id="docking-trna" transform="translate(340, 160)">
+                      <!-- White/light-grey hairpin outline -->
+                      <path d="M 0,10 L -8,-10 L 0,-25 L 8,-10 Z" fill="#a7f3d0" stroke="#059669" stroke-width="1.8" />
+                      <circle cx="0" cy="-25" r="3.5" fill="#059669" />
+                      <!-- Attached Amino Acid sphere (Blue) -->
+                      <circle cx="0" cy="-31" r="7.5" fill="url(#amino-blue)" filter="url(#shadow)" />
+                      <!-- Anticodon letters -->
+                      <text x="-4" y="16" font-family="sans-serif" font-weight="bold" font-size="6" fill="var(--text)">G</text>
+                      <text x="0" y="16" font-family="sans-serif" font-weight="bold" font-size="6" fill="var(--text)">C</text>
+                      <text x="4" y="16" font-family="sans-serif" font-weight="bold" font-size="6" fill="var(--text)">A</text>
+                      <!-- Small arrow indicating dock direction -->
+                      <path d="M -10,0 L -25,20" stroke="var(--text)" stroke-width="1.2" stroke-linecap="round" fill="none" />
+                      <polygon points="-25,20 -19,19 -23,13" fill="var(--text)" />
+                    </g>
+
+                    <!-- Fully Folded Active Protein (fades in near translation exit) -->
+                    <g id="active-protein-sphere" transform="translate(440, 95)" class="opacity-95">
+                      <!-- Clustered colorful amino acid spheres representing folded protein -->
+                      <circle cx="-12" cy="5" r="9" fill="url(#amino-blue)" />
+                      <circle cx="12" cy="-5" r="9" fill="url(#amino-orange)" />
+                      <circle cx="0" cy="-12" r="9" fill="url(#amino-green)" />
+                      <circle cx="-8" cy="-8" r="9" fill="url(#amino-yellow)" />
+                      <circle cx="8" cy="8" r="9" fill="url(#amino-purple)" />
+                      <circle cx="10" cy="-10" r="9" fill="url(#amino-red)" />
+                      <circle cx="-10" cy="10" r="9" fill="url(#amino-pink)" />
+                      <circle cx="0" cy="0" r="10" fill="url(#amino-blue)" />
+                      <text x="0" y="3" font-family="sans-serif" font-size="7" font-weight="bold" fill="white" text-anchor="middle" filter="url(#shadow)">Protein</text>
+                    </g>
+
+                    <!-- Textbook labels pointing to Translation features -->
+                    <g id="translation-textbook-labels" class="opacity-90">
+                      <!-- Translation Title Label -->
+                      <text x="240" y="50" font-family="sans-serif" font-size="12" font-weight="bold" fill="var(--text)" text-anchor="middle" letter-spacing="0.1em">TRANSLATION</text>
+
+                      <!-- Codon bracket box inside ribosome cleft -->
+                      <rect x="222" y="270" width="40" height="20" fill="none" stroke="var(--text)" stroke-width="1.2" rx="2" />
+                      <text x="242" y="303" font-family="sans-serif" font-size="8" font-weight="bold" fill="var(--text)" text-anchor="middle">Codon</text>
+
+                      <!-- Ribosome label -->
+                      <text x="140" y="315" font-family="sans-serif" font-size="9" font-weight="bold" fill="var(--text)">Ribosome</text>
+                      <line x1="184" y1="311" x2="200" y2="295" stroke="var(--muted)" stroke-width="1" />
+                      <circle cx="200" cy="295" r="1.5" fill="var(--muted)" />
+
+                      <!-- tRNA label -->
+                      <text x="382" y="195" font-family="sans-serif" font-size="9" font-weight="bold" fill="var(--text)">tRNA</text>
+                      <line x1="380" y1="192" x2="355" y2="175" stroke="var(--muted)" stroke-width="1" />
+                      <circle cx="355" cy="175" r="1.5" fill="var(--muted)" />
+
+                      <!-- Amino acids label -->
+                      <text x="385" y="145" font-family="sans-serif" font-size="9" font-weight="bold" fill="var(--text)">Amino acids</text>
+                      <line x1="382" y1="142" x2="348" y2="135" stroke="var(--muted)" stroke-width="1" />
+                      <circle cx="348" cy="135" r="1.5" fill="var(--muted)" />
+
+                      <!-- Growing protein chain label -->
+                      <text x="325" y="156" font-family="sans-serif" font-size="8" font-weight="bold" fill="var(--muted)">Growing protein chain</text>
+                      <line x1="322" y1="152" x2="295" y2="134" stroke="var(--muted)" stroke-width="0.8" />
+                      <circle cx="295" cy="134" r="1.5" fill="var(--muted)" />
+
+                      <!-- Cytoplasm area label -->
+                      <text x="480" y="270" font-family="sans-serif" font-size="10" font-weight="bold" fill="var(--muted)" letter-spacing="0.05em">Cytoplasm</text>
+                    </g>
+                  </g>
+                  
+                </svg>
+
+                <!-- Floating real-time status overlay box -->
+                <div id="visualizer-status-overlay" class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm border border-line p-3 rounded-xl shadow-md transition-all duration-300 flex gap-3 items-center pointer-events-none z-30">
+                  <span class="font-mono text-[8px] bg-cell/10 text-cell px-2 py-1 rounded font-bold uppercase tracking-wider shrink-0">SPOTLIGHT</span>
+                  <p id="status-overlay-text" class="text-stone-700 text-[10.5px] leading-relaxed font-sans">Initialize scanning...</p>
+                </div>
+              </div>
+
+              <!-- Sticky Visualizer Dashboard Panel -->
+              <div class="bg-stone-50 border border-line rounded-3xl p-6 shadow-sm grid grid-cols-1 md:grid-cols-2 gap-6 relative">
+                
+                <!-- Left half: Transcription Machinery -->
+                <div class="space-y-3">
+                  <div class="flex justify-between items-center pb-1.5 border-b border-line">
+                    <h4 class="text-xs font-mono font-bold text-stone-900 tracking-wider uppercase">Transcription Machinery</h4>
+                    <span class="font-mono text-[9px] bg-cell/5 border border-cell/15 text-cell px-1.5 py-0.5 rounded uppercase font-bold">Live</span>
+                  </div>
+                  
+                  <div class="space-y-2.5">
+                    <!-- Chromatin Clearance -->
+                    <div class="space-y-0.5">
+                      <div class="flex justify-between text-[11px] font-mono text-stone-600">
+                        <span>Chromatin Clearance</span>
+                        <span id="meter-val-clearance" class="font-bold text-stone-900">15%</span>
+                      </div>
+                      <div class="h-1.5 w-full bg-stone-200 rounded-full overflow-hidden">
+                        <div id="bar-clearance" class="h-full bg-stone-900 transition-all duration-300" style="width: 15%;"></div>
+                      </div>
+                    </div>
+
+                    <!-- Pol II Processivity -->
+                    <div class="space-y-0.5">
+                      <div class="flex justify-between text-[11px] font-mono text-stone-600">
+                        <span>RNA Pol II Processivity</span>
+                        <span id="meter-val-pol" class="font-bold text-stone-900">0 nt/s</span>
+                      </div>
+                      <div class="h-1.5 w-full bg-stone-200 rounded-full overflow-hidden">
+                        <div id="bar-pol" class="h-full bg-orange-600 transition-all duration-300" style="width: 0%;"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Right half: Translation Machinery & Compartment -->
+                <div class="flex flex-col justify-between space-y-4">
+                  <div class="space-y-3">
+                    <div class="flex justify-between items-center pb-1.5 border-b border-line">
+                      <h4 class="text-xs font-mono font-bold text-stone-900 tracking-wider uppercase">Translation & Folding</h4>
+                      <span class="font-mono text-[9px] bg-indigo-50 border border-indigo-200/50 text-indigo-700 px-1.5 py-0.5 rounded uppercase font-bold">Active</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                      <!-- Ribosomal rate -->
+                      <div class="space-y-1">
+                        <span class="font-mono text-[9px] text-muted tracking-widest block uppercase font-bold">Ribosomal Rate</span>
+                        <span id="meter-val-ribo" class="text-2xl text-stone-900 font-normal font-mono block leading-none">0 aa/s</span>
+                        <div class="h-1.5 w-full bg-stone-200 rounded-full overflow-hidden mt-1">
+                          <div id="bar-ribo" class="h-full bg-indigo-600 transition-all duration-300" style="width: 0%;"></div>
+                        </div>
+                      </div>
+
+                      <!-- Chaperone Folding Shield -->
+                      <div class="space-y-1">
+                        <span class="font-mono text-[9px] text-muted tracking-widest block uppercase font-bold">Folding Shield</span>
+                        <span id="meter-val-shield" class="text-2xl text-stone-900 font-normal font-mono block leading-none">0%</span>
+                        <div class="h-1.5 w-full bg-stone-200 rounded-full overflow-hidden mt-1">
+                          <div id="bar-shield" class="h-full bg-teal-600 transition-all duration-300" style="width: 0%;"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Quick Translation Check Indicators -->
+                  <div class="grid grid-cols-2 gap-2 border-t border-line/60 pt-3">
+                    <div class="flex items-center gap-1.5">
+                      <div id="compartment-status-icon" class="w-3.5 h-3.5 rounded-full bg-emerald-100 border border-emerald-200 flex items-center justify-center text-emerald-700 text-[8px] font-bold">✓</div>
+                      <span class="text-[9px] font-mono text-stone-600">Compartment: <span id="compartment-status-label" class="font-bold text-emerald-700 uppercase">Nucleus</span></span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                      <div id="polypeptide-status-icon" class="w-3.5 h-3.5 rounded-full bg-stone-100 border border-stone-200 flex items-center justify-center text-stone-400 text-[8px] font-bold">○</div>
+                      <span class="text-[9px] font-mono text-stone-600">Protein: <span id="polypeptide-status-label" class="font-bold text-stone-500 uppercase">Inactive</span></span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Microscope footer -->
+              <div class="flex justify-between items-center text-[9px] font-mono border-t border-line/60 pt-3 text-stone-500 mt-2">
+                <span class="flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-cell animate-pulse"></span>
+                  PATHWAY DETECTED: <span id="visual-stage-active" class="text-stone-950 font-bold uppercase">Chromatin Remodeling</span>
+                </span>
+                <span>ONTOSMA SYSTEM v1.2</span>
+              </div>
+
+            </div>
+
+            <!-- Right Column: Vertical Scrollytelling Captions Stack (40%) -->
+            <div class="w-full lg:w-[40%] flex flex-col justify-center h-[38vh] lg:h-[82vh] lg:min-h-[740px] relative">
+              
+              <!-- Caption 1: Chromatin Clearance -->
+              <div id="caption-1" class="caption-fade-box absolute w-full max-w-md">
+                <span class="font-mono text-[10px] text-fate uppercase tracking-wider block mb-1.5 font-bold">Stage I · Chromatin Clearing</span>
+                <h4 class="text-xl text-stone-900 font-semibold mb-2 font-serif leading-tight">Pioneer Engagement</h4>
+                <p class="text-stone-600 text-[11.5px] leading-relaxed font-sans">
+                  Pioneer factors utilize non-specific electrostatic interactions with the phosphodiester backbone to rapidly scan condensed chromatin in three dimensions. 
+                  <br><br>
+                  Upon encountering their target sequence, their DNA-binding domain inserts an alpha-helix into the nucleosome surface to securely anchor the protein, mechanically distorting the DNA duplex to force approximately 25 base pairs to unwrap from the histone octamer.
+                </p>
+                <div class="mt-3 flex flex-wrap gap-1">
+                  <span class="font-mono text-[8px] bg-fate/5 border border-fate/15 text-fate px-1.5 py-0.5 rounded uppercase font-semibold">PIONEER ENGAGEMENT</span>
+                  <span class="font-mono text-[8px] bg-fate/5 border border-fate/15 text-fate px-1.5 py-0.5 rounded uppercase font-semibold">DNA UNWRAPPING</span>
+                  <span class="font-mono text-[8px] bg-stone-100 text-stone-500 px-1.5 py-0.5 rounded uppercase font-semibold">CHROMATIN CLEARANCE</span>
+                </div>
+              </div>
+
+              <!-- Caption 2: RNA Polymerase II Assembly & Transcription -->
+              <div id="caption-2" class="caption-fade-box absolute w-full max-w-md">
+                <span class="font-mono text-[10px] text-fate uppercase tracking-wider block mb-1.5 font-bold">Stage II · Transcription</span>
+                <h4 class="text-xl text-stone-900 font-semibold mb-2 font-serif leading-tight">RNA Polymerase II Assembly</h4>
+                <p class="text-stone-600 text-[11.5px] leading-relaxed font-sans">
+                  The massive TFIID complex undergoes a large-scale structural rearrangement, swinging its mobile lobe A over the promoter DNA to physically deposit the TATA-binding protein (TBP). 
+                  <br><br>
+                  With DNA melted by the TFIIH translocase, RNA Polymerase II locks onto the template strand, initiating processive elongation and transcribing genetic code into a nascent, single-stranded pre-mRNA transcript.
+                </p>
+                <div class="mt-3 flex flex-wrap gap-1">
+                  <span class="font-mono text-[8px] bg-fate/5 border border-fate/15 text-fate px-1.5 py-0.5 rounded uppercase font-semibold">RNA POLYMERASE II</span>
+                  <span class="font-mono text-[8px] bg-fate/5 border border-fate/15 text-fate px-1.5 py-0.5 rounded uppercase font-semibold">TRANSCRIPTION BUBBLE</span>
+                  <span class="font-mono text-[8px] bg-stone-100 text-stone-500 px-1.5 py-0.5 rounded uppercase font-semibold">PRE-mRNA SYNTHESIS</span>
+                </div>
+              </div>
+
+              <!-- Caption 3: Nuclear Export & Ribosome Assembly -->
+              <div id="caption-3" class="caption-fade-box absolute w-full max-w-md">
+                <span class="font-mono text-[10px] text-cell uppercase tracking-wider block mb-1.5 font-bold">Stage III · Ribosome Assembly</span>
+                <h4 class="text-xl text-stone-900 font-semibold mb-2 font-serif leading-tight">Cytoplasmic Entry & Initiation</h4>
+                <p class="text-stone-600 text-[11.5px] leading-relaxed font-sans">
+                  Mature, spliced mRNPs undergo translocation through selective nuclear pores, driven by Dbp5 cytoplasmic stripping. 
+                  <br><br>
+                  In the cytoplasm, the 40S small ribosomal subunit clamps onto the mRNA track, scanning for the AUG start codon, before recruiting the massive 60S large subunit to assemble the fully active 80S translation factory.
+                </p>
+                <div class="mt-3 flex flex-wrap gap-1">
+                  <span class="font-mono text-[8px] bg-cell/5 border border-cell/15 text-cell px-1.5 py-0.5 rounded uppercase font-semibold">NUCLEAR EXPORT</span>
+                  <span class="font-mono text-[8px] bg-cell/5 border border-cell/15 text-cell px-1.5 py-0.5 rounded uppercase font-semibold">RIBOSOME ASSEMBLY</span>
+                  <span class="font-mono text-[8px] bg-stone-100 text-stone-500 px-1.5 py-0.5 rounded uppercase font-semibold">START CODON POSITIONING</span>
+                </div>
+              </div>
+
+              <!-- Caption 4: Elongation, Translocation & Chaperone Folding -->
+              <div id="caption-4" class="caption-fade-box absolute w-full max-w-md">
+                <span class="font-mono text-[10px] text-cell uppercase tracking-wider block mb-1.5 font-bold">Stage IV · Polypeptide Formation</span>
+                <h4 class="text-xl text-stone-900 font-semibold mb-2 font-serif leading-tight">Elongation & Folding</h4>
+                <p class="text-stone-600 text-[11.5px] leading-relaxed font-sans">
+                  Elongation factor G (EF-G) drives the ratchet-like translocation of tRNA molecules from the A-site to the P-site. 
+                  <br><br>
+                  As the raw polypeptide chain extrudes from the exit port, the Trigger Factor (TF) chaperone immediately engulfs it in a hydrophobic cradle, coordinating with downstream DnaJ/DnaK to fold the protein into its final 3D functional structure.
+                </p>
+                <div class="mt-3 flex flex-wrap gap-1">
+                  <span class="font-mono text-[8px] bg-cell/5 border border-cell/15 text-cell px-1.5 py-0.5 rounded uppercase font-semibold">TRANSLATION ELONGATION</span>
+                  <span class="font-mono text-[8px] bg-cell/5 border border-cell/15 text-cell px-1.5 py-0.5 rounded uppercase font-semibold">TRIGGER FACTOR CRADLE</span>
+                  <span class="font-mono text-[8px] bg-stone-100 text-stone-500 px-1.5 py-0.5 rounded uppercase font-semibold">3D PROTEIN FOLDING</span>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. COMPREHENSIVE 28-STEP EXPRESSION CASCADE ENCYCLOPEDIA (Full academic detail) -->
+      <section id="handbook-encyclopedia" class="py-24 px-6 border-t border-line bg-panel relative">
+        <div class="absolute inset-0 svg-bg-grid opacity-10 pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto space-y-12 relative z-10">
+          
+          <div class="space-y-4 text-center max-w-3xl mx-auto">
+            <span class="font-mono text-xs tracking-[0.2em] text-cell uppercase font-semibold">ACADEMIC REFERENCE DATA</span>
+            <h2 class="text-4xl text-stone-900 font-normal font-serif leading-tight">The Expression Cascade Handbook</h2>
+            <p class="text-muted text-sm leading-relaxed">
+              Dive deep into the full, peer-reviewed trajectory mapping Francis Crick's unidirectional flow. Select a biochemical chapter below to explore the 28 structural milestones.
+            </p>
+          </div>
+
+          <!-- Interactive Handbook Selector Tabs -->
+          <div class="flex flex-wrap gap-2 justify-center pb-4 max-w-4xl mx-auto" id="handbook-tabs-container">
+            <!-- Dynamically populated via JavaScript -->
+          </div>
+
+          <!-- Handbook Active Chapter Board -->
+          <div class="bg-white border border-line rounded-3xl p-8 shadow-sm max-w-5xl mx-auto space-y-8 min-h-[400px]">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-line">
+              <div class="space-y-1">
+                <span class="font-mono text-xs text-cell uppercase tracking-wider font-semibold block" id="active-chapter-num">Chapter 01</span>
+                <h3 class="text-2xl text-stone-900 font-normal font-serif" id="active-chapter-title">Chromatin Remodeling and Pioneer Factor Engagement</h3>
+              </div>
+              <div class="font-mono text-xs text-stone-500">
+                ACTIVE COMPARTMENT: <span id="active-chapter-compartment" class="text-cell font-bold uppercase">Nucleus</span>
+              </div>
+            </div>
+
+            <!-- 4 Concepts list inside the active chapter -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="chapter-concepts-grid">
+              <!-- Dynamically populated via JavaScript -->
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- 4. CRICK'S FLOW EXPLANATION SECTION -->
+      <section id="dogma-explanation" class="py-24 px-6 border-t border-line bg-white relative">
+        <div class="max-w-4xl mx-auto space-y-8">
+          <div class="space-y-3">
+            <span class="font-mono text-xs text-cell uppercase tracking-wider block font-semibold font-mono">INTEGRATIVE BIOCHEMISTRY</span>
+            <h2 class="text-3xl md:text-5xl text-stone-900 font-normal font-serif">Francis Crick's Unidirectional Flow</h2>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-stone-600 text-sm leading-relaxed font-sans">
+            <p>
+              The transfer of biological sequence data is absolute. Once genetic code escapes its high-fidelity packaging in chromatin and enters transcription, a multi-step molecular funnel processes the transient vector through processing tunnels, nucleocytoplasmic gatekeepers, and complex ribosomal translation chambers.
+            </p>
+            <p>
+              By resolving these 28 sequential checkpoints, cells achieve pristine spatiotemporal control. This high-fidelity machinery guarantees that embryonic development, cellular differentiation, and systemic response pathways trigger with absolute physical and metabolic safety.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. SCIENTIFIC REFERENCES LIST -->
+      <section id="citations-and-cta" class="py-20 px-6 border-t border-line bg-panel relative">
+        <div class="max-w-4xl mx-auto text-center space-y-12">
+          
+          <!-- Reference List -->
+          <div class="border-t border-b border-line py-8 max-w-3xl mx-auto space-y-4">
+            <span class="font-mono text-[10px] text-muted tracking-widest block uppercase font-bold">CONSOLIDATED ACADEMIC CITATIONS</span>
+            <ul id="scientific-citations-list" class="space-y-3.5 font-mono text-[10.5px] text-muted leading-relaxed text-left max-w-2xl mx-auto">
+              <!-- Injected dynamically via JS to avoid duplication -->
+            </ul>
+          </div>
+
+          <div class="space-y-6">
+            <h3 class="text-2xl text-stone-900 font-normal font-serif italic">Curious about cell-fate plasticity and regenerative biology?</h3>
+            <p class="text-muted text-xs max-w-md mx-auto font-sans">
+              Once genetic instructions compile into 3D folded functional proteins, how can locked cells reprogram back to pluripotent ground states?
+            </p>
+            <div class="pt-4">
+              <a href="./blastema.html" class="btn-pill btn-pill-primary text-xs">
+                Explore Blastema & Regeneration
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-line py-16 px-6">
+      <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12">
+        <div class="md:col-span-6 space-y-4">
+          <div class="flex items-center gap-2">
+            <span class="font-serif text-lg font-semibold tracking-tight text-stone-900">Ontosma</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-cell shadow-[0_0_8px_#ea580c]"></span>
+          </div>
+          <p class="text-muted text-xs leading-relaxed max-w-sm font-sans">
+            An independent educational companion and newsletter bringing rigorous, plain-language clarity to stem cell developmental biology and molecular food-culture science.
+          </p>
+        </div>
+
+        <div class="md:col-span-3 space-y-4">
+          <h4 class="font-mono text-xs tracking-wider text-cell uppercase font-semibold">EXPLORE</h4>
+          <ul class="space-y-2 text-xs font-mono text-muted">
+            <li><a href="../index.html" class="hover:text-cell transition-colors">Homepage</a></li>
+            <li><a href="../newsletter.html" class="hover:text-cell transition-colors">Daily Digest</a></li>
+            <li><a href="../columns.html" class="hover:text-cell transition-colors">Weekly Columns</a></li>
+            <li><a href="../concepts.html" class="hover:text-cell transition-colors">Concept Library</a></li>
+            <li><a href="../index.html#about" class="hover:text-cell transition-colors">About Us</a></li>
+          </ul>
+        </div>
+
+        <div class="md:col-span-3 space-y-4">
+          <h4 class="font-mono text-xs tracking-wider text-cell uppercase font-semibold">ELSEWHERE</h4>
+          <ul class="space-y-2 text-xs font-mono text-muted">
+            <li><a href="https://x.com" target="_blank" rel="noopener noreferrer" class="hover:text-cell transition-colors">X / Twitter</a></li>
+            <li><a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="hover:text-cell transition-colors">LinkedIn</a></li>
+            <li><a href="https://threads.net" target="_blank" rel="noopener noreferrer" class="hover:text-cell transition-colors">Threads</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="max-w-7xl mx-auto border-t border-line mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <span class="font-mono text-[10px] text-muted">
+          &copy; 2026 Ontosma. All rights reserved.
+        </span>
+        <span class="font-mono text-[10px] text-muted italic">
+          Deciphering the blueprints of growth and preservation.
+        </span>
+      </div>
+    </footer>
+
+    <!-- GSAP / ScrollTrigger Engine Implementation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script>
+      // Register GSAP ScrollTrigger
+      gsap.registerPlugin(ScrollTrigger);
+
+      // =========================================================
+      // DYNAMIC MOLECULAR TRANSCRIPTION & TRANSLATION DATA CORE
+      // =========================================================
+      const STAGES_DATA = [
+        {
+          chapterNum: "Chapter 01",
+          phaseName: "Chromatin Remodeling and Pioneer Factor Engagement",
+          compartment: "Nucleus",
+          meters: { clearance: 15, polRate: 0, riboRate: 0, shield: 0 },
+          concepts: [
+            {
+              title: "Chromatin Scanning and Target Recognition",
+              definition: "Pioneer factors utilize non-specific electrostatic interactions with the phosphodiester backbone to rapidly scan condensed chromatin in three dimensions. Upon encountering their target sequence, their DNA-binding domain inserts an alpha-helix into the nucleosome surface to securely anchor the protein.",
+              citation: "Barral and Zaret, 2024, Pioneer factors: roles and their regulation in development",
+              bridge: "Once securely anchored to the nucleosome, the pioneer factor begins to physically dismantle the repressive chromatin architecture."
+            },
+            {
+              title: "Nucleosome Binding and Histone Displacement",
+              definition: "The pioneer factor's DNA-binding domain clamps onto the outer DNA face, while external protein domains directly dock onto core histones like H2A. This physical wedge disrupts internucleosomal interactions and structurally ejects the compacting linker histone H1 from the dyad axis.",
+              citation: "Zaret and Carroll, 2011, Pioneer transcription factors: establishing competence for gene expression",
+              bridge: "Ejecting the linker histone destabilizes the particle, allowing the DNA to pull away from the core."
+            },
+            {
+              title: "DNA Unwrapping and Chromatin Decompaction",
+              definition: "The anchored pioneer factor mechanically distorts the DNA duplex, forcing approximately 25 base pairs to unwrap from the histone octamer. This distortion repositions the H4 and H2B histone tails, reducing the dense stacking of adjacent nucleosomes to create a locally accessible pocket.",
+              citation: "Barral and Zaret, 2024, Pioneer factors: roles and their regulation in development",
+              bridge: "This locally exposed pocket provides a landing pad for massive enzymatic complexes to permanently clear the region."
+            },
+            {
+              title: "SWI/SNF Recruitment and Remodeling",
+              definition: "The pioneer factor's unstructured domains recruit the ATP-dependent SWI/SNF complex directly to the partially opened site. SWI/SNF hydrolyzes ATP to forcefully slide or evict the remaining histones, fully exposing the cis-regulatory elements for the transcriptional machinery.",
+              citation: "Barral and Zaret, 2024, Pioneer factors: roles and their regulation in development",
+              bridge: "With the promoter fully cleared of histones, the basal transcription machinery can now assemble to initiate RNA synthesis."
+            }
+          ]
+        },
+        {
+          chapterNum: "Chapter 02",
+          phaseName: "RNA Polymerase II Pre-Initiation Complex Assembly and Elongation",
+          compartment: "Nucleus",
+          meters: { clearance: 85, polRate: 25, riboRate: 0, shield: 0 },
+          concepts: [
+            {
+              title: "TFIID Reorganization and TBP Delivery",
+              definition: "The massive TFIID complex undergoes a large-scale structural rearrangement, swinging its mobile lobe A over the promoter DNA to physically deposit the TATA-binding protein (TBP). TBP inserts phenylalanine residues into the minor groove, sharply bending the DNA by 90 degrees to nucleate the pre-initiation complex.",
+              citation: "Schier and Taatjes, 2020, Structure and mechanism of the RNA polymerase II transcription machinery",
+              bridge: "The bent DNA forms a rigid platform that aligns RNA Polymerase II and positions the downstream DNA for strand separation."
+            },
+            {
+              title: "TFIIH-Mediated DNA Melting",
+              definition: "The XPB translocase subunit of the TFIIH complex grips the downstream DNA and acts as a molecular wrench powered by ATP hydrolysis. It forcefully twists and reels the downstream DNA into the polymerase cleft against a fixed upstream anchor, physically melting the DNA strands to form the transcription bubble.",
+              citation: "Schier and Taatjes, 2020, Structure and mechanism of the RNA polymerase II transcription machinery",
+              bridge: "With the DNA strands separated, the polymerase begins synthesizing the first few RNA nucleotides before transitioning to highly processive elongation."
+            },
+            {
+              title: "Promoter Escape and Elongation Complex Locking",
+              definition: "As the polymerase synthesizes a short RNA, it breaks contacts with the initiation factor TFIIB and recruits elongation factors like DSIF (Spt4/5). DSIF bridges the polymerase cleft to clamp down on the DNA and the emerging RNA, locking the enzyme into a stable, processive elongation complex.",
+              citation: "Schier and Taatjes, 2020, Structure and mechanism of the RNA polymerase II transcription machinery",
+              bridge: "The locked elongation complex travels smoothly along the gene body until it violently collides with a downstream nucleosome."
+            },
+            {
+              title: "FACT-Mediated Nucleosome Traversal",
+              definition: "When the polymerase encounters a nucleosome, Spt4/5 peels the DNA away from the histones while the FACT chaperone grips the exposed H2A-H2B dimers. FACT temporarily absorbs the histone components and transfers them to the upstream side of the polymerase, immediately reassembling the nucleosome behind the transcribing enzyme.",
+              citation: "Sekine, 2025, Toward structural understanding of eukaryotic transcription elongation",
+              bridge: "While the polymerase complex navigates these nucleosomes, its trailing domain simultaneously anchors the machinery needed to process the newly synthesized RNA."
+            }
+          ]
+        },
+        {
+          chapterNum: "Chapter 03",
+          phaseName: "Co-Transcriptional Pre-mRNA Splicing",
+          compartment: "Nucleus",
+          meters: { clearance: 95, polRate: 70, riboRate: 0, shield: 15 },
+          concepts: [
+            {
+              title: "Polymerase CTD Tethering",
+              definition: "The highly phosphorylated, flexible C-terminal domain (CTD) of RNA Polymerase II acts as a physical scaffold that directly traps splicing factors at the transcription site. This physical tethering forces the spliceosome to assemble strictly adjacent to the polymerase's RNA exit channel, functionally coupling transcription rate to splicing efficiency.",
+              citation: "Shenasa and Bentley, 2023, Pre-mRNA splicing and its co-transcriptional connections",
+              bridge: "Stationed right at the exit channel, the splicing machinery is perfectly positioned to capture structural elements of the RNA as soon as they are extruded."
+            },
+            {
+              title: "U1 snRNP Capture and Intron Looping",
+              definition: "The U1 snRNP docks directly onto the back of the advancing polymerase, capturing and base-pairing with the 5' splice site as it emerges from the exit channel. This tethering anchors one end of the intron while the polymerase continues synthesizing the rest, pulling the intervening RNA sequence into an expanding physical loop.",
+              citation: "Shenasa and Bentley, 2023, Pre-mRNA splicing and its co-transcriptional connections",
+              bridge: "The expanding loop serves to actively scan the transcript for the downstream splicing signals required to close the loop."
+            },
+            {
+              title: "Splice Site Bridging and Commitment",
+              definition: "The U2 snRNP and U2AF factors bind the newly transcribed branch point and 3' splice site, initiating a cross-intron bridging event with the polymerase-bound U1 snRNP. This structural interaction locks the 5' and 3' ends of the intron together, committing the pre-spliceosome to a specific splicing pathway.",
+              citation: "Shenasa and Bentley, 2023, Pre-mRNA splicing and its co-transcriptional connections",
+              bridge: "Once the splice sites are securely paired, the complex undergoes a massive internal rearrangement to execute the chemical cuts."
+            },
+            {
+              title: "Catalytic Spliceosome Remodeling",
+              definition: "The assembled spliceosome hydrolyzes ATP to forcefully eject the U1 and U4 snRNPs, triggering a massive RNA-protein structural rearrangement that aligns the catalytic core. This new configuration executes two sequential trans-esterification reactions to snap the intron into a branched lariat and seamlessly ligate the flanking exons together.",
+              citation: "Shenasa and Bentley, 2023, Pre-mRNA splicing and its co-transcriptional connections",
+              bridge: "Following the removal of introns, the mature mRNA must be rapidly packaged for transport out of the nucleus."
+            }
+          ]
+        },
+        {
+          chapterNum: "Chapter 04",
+          phaseName: "Messenger Ribonucleoprotein (mRNP) Maturation and Nuclear Export",
+          compartment: "Nuclear Pore",
+          meters: { clearance: 95, polRate: 90, riboRate: 5, shield: 30 },
+          concepts: [
+            {
+              title: "Sub2-Mediated mRNP Assembly",
+              definition: "The DEAD-box ATPase Sub2 binds the nascent mRNA transcript and undergoes a conformational closure that perfectly aligns its two RecA-like domains. This structural shift, stabilized by the THO complex, physically loads the adaptor protein Yra1 onto the RNA backbone.",
+              citation: "Xie and Ren, 2019, Mechanisms of nuclear mRNA export: A structural perspective",
+              bridge: "The newly loaded Yra1 adaptor acts as a specific docking pad for the main nuclear export machinery."
+            },
+            {
+              title: "Mex67-Mtr2 Receptor Docking",
+              definition: "The Yra1 adaptor recruits the Mex67-Mtr2 heterodimer, allowing the export receptor's RNA-recognition motifs to directly grip the mature mRNA. This interaction coats the mRNA with export receptors and subsequently displaces the Sub2 ATPase, finalizing the export-competent ribonucleoprotein particle.",
+              citation: "Xie and Ren, 2019, Mechanisms of nuclear mRNA export: A structural perspective",
+              bridge: "Coated in transport receptors, the mRNA package is now capable of surviving the journey through the dense nuclear envelope."
+            },
+            {
+              title: "NPC Translocation via FG-Repeats",
+              definition: "The coated ribonucleoprotein complex enters the central channel of the Nuclear Pore Complex by engaging the intrinsically disordered phenylalanine-glycine (FG) repeat proteins. The Mex67-Mtr2 receptors use their NTF2-like and UBA domains to rapidly bind and release these FG-repeats, melting through the pore's hydrogel barrier.",
+              citation: "Xie and Ren, 2019, Mechanisms of nuclear mRNA export: A structural perspective",
+              bridge: "Upon breaking through the barrier and emerging into the cytoplasm, the mRNA must be actively blocked from sliding back inside."
+            },
+            {
+              title: "Dbp5-Driven Cytoplasmic Stripping",
+              definition: "As the complex emerges into the cytoplasm, the DEAD-box ATPase Dbp5 locks onto the RNA and hydrolyzes ATP to forcefully pry the Mex67-Mtr2 export receptors off the transcript. This irreversible mechanical stripping prevents the mRNA from sliding backward through the pore, establishing strictly unidirectional nuclear export.",
+              citation: "Xie and Ren, 2019, Mechanisms of nuclear mRNA export: A structural perspective",
+              bridge: "With the export receptors stripped away, the naked mRNA is completely exposed and ready to be engaged by the ribosomal subunits."
+            }
+          ]
+        },
+        {
+          chapterNum: "Chapter 05",
+          phaseName: "Ribosome Assembly and Translation Initiation",
+          compartment: "Cytoplasm",
+          meters: { clearance: 100, polRate: 95, riboRate: 15, shield: 45 },
+          concepts: [
+            {
+              title: "Pre-Initiation Complex Positioning",
+              definition: "The 40S small ribosomal subunit clamps onto the mRNA, utilizing translation initiation factors to perfectly align the initiator Met-tRNA over the AUG start codon. This assembly establishes the precise foundational reading frame necessary for accurate polypeptide synthesis.",
+              citation: "Fernández et al., 2013, Crystal structures of a starvation-stalled 80S ribosome",
+              bridge: "With the start codon located, the small subunit must recruit the massive 60S subunit to complete the translation factory."
+            },
+            {
+              title: "eIF5B-Mediated Subunit Joining",
+              definition: "The GTPase eIF5B docks onto the 40S subunit and recruits the 60S large ribosomal subunit, holding the initiator tRNA in a strained, intermediate conformation. This physical distortion prevents the tRNA's 3'-CCA end from prematurely sliding into the catalytic peptidyl transferase center.",
+              citation: "Fernández et al., 2013, Crystal structures of a starvation-stalled 80S ribosome",
+              bridge: "The subunits are loosely joined, waiting for a mechanical trigger to lock them into their final catalytic geometry."
+            },
+            {
+              title: "GTP Hydrolysis and Ribosome Locking",
+              definition: "Once the 60S subunit is properly aligned, eIF5B hydrolyzes GTP, causing a massive conformational shift that violently ejects the initiation factor. This ejection allows the two ribosomal subunits to fully ratchet together, snapping the initiator tRNA directly into the active site of the mature 80S ribosome.",
+              citation: "Fernández et al., 2013, Crystal structures of a starvation-stalled 80S ribosome",
+              bridge: "Fully assembled, the ribosome begins the repetitive elongation cycle by accepting a new amino acid building block."
+            },
+            {
+              title: "tRNA Accommodation via the A-loop Gate",
+              definition: "During the subsequent decoding cycle, the incoming aminoacyl-tRNA dynamically bends and threads its 3'-CCA amino acid-bearing tail through a tight structural gate formed by the 23S rRNA A-loop. Upon clearing this physical gate, the tRNA structurally relaxes, firmly locking the new amino acid into the peptidyl transferase center for bond formation.",
+              citation: "Sanbonmatsu et al., 2005, Simulating movement of tRNA into the ribosome during decoding",
+              bridge: "Once the amino acids are chemically linked, the entire ribosomal machinery must shift the transcript to read the next codon."
+            }
+          ]
+        },
+        {
+          chapterNum: "Chapter 06",
+          phaseName: "Ribosomal Translocation and Polypeptide Elongation",
+          compartment: "Cytoplasm",
+          meters: { clearance: 100, polRate: 100, riboRate: 35, shield: 60 },
+          concepts: [
+            {
+              title: "Peptidyl Transfer and Hybrid State Formation",
+              definition: "Immediately after the peptidyl transfer reaction chemically links the amino acids, the tRNA acceptor stems spontaneously pivot within the large subunit into adjacent binding sites. This creates a strained hybrid configuration where the tRNAs occupy the A/P and P/E sites, while their anticodons remain rigidly anchored in the small subunit.",
+              citation: "Shoji et al., 2010, Structural dynamics of translation elongation",
+              bridge: "Resolving this extreme hybrid strain requires a massive mechanical rotation of the entire ribosomal body."
+            },
+            {
+              title: "Ratchet-Like Subunit Rotation",
+              definition: "The thermodynamic strain of the hybrid tRNAs forces the entire 30S small subunit to rotate approximately 10 degrees counter-clockwise relative to the large subunit. This massive ratchet-like motion is accompanied by the inward swing of the L1 stalk, physically gripping the deacylated tRNA to prime it for ejection.",
+              citation: "Shoji et al., 2010, Structural dynamics of translation elongation",
+              bridge: "The ribosome is now in a rotated state, requiring an external motor protein to forcefully drive it back to its baseline position."
+            },
+            {
+              title: "EF-G Driven Unlocking",
+              definition: "Elongation factor G (EF-G) bound to GTP wedges its domains deeply into the ribosomal A site and hydrolyzes GTP, triggering a drastic conformational expansion of its domain IV. This shape-shift physically pushes against the decoding center, unlocking the ribosome and breaking the tight grip between the tRNAs and the mRNA tract.",
+              citation: "Shoji et al., 2010, Structural dynamics of translation elongation",
+              bridge: "With the decoding center unlocked, the small subunit's head can physically swing to drag the transcript forward."
+            },
+            {
+              title: "Head Swiveling and Translocation",
+              definition: "The head of the 30S subunit violently swivels 6 degrees toward the exit site, dragging the mRNA and the bound tRNA anticodons exactly one codon forward into the final P/P and E/E states. EF-G then dissociates, allowing the ribosome to back-ratchet into its resting geometry with an empty A site, ready for the next incoming tRNA.",
+              citation: "Shoji et al., 2010, Structural dynamics of translation elongation",
+              bridge: "As the amino acids are repeatedly linked and the transcript shifts, the newly synthesized protein begins to continuously extrude from the ribosome."
+            }
+          ]
+        },
+        {
+          chapterNum: "Chapter 07",
+          phaseName: "Co-Translational Protein Folding and Chaperone Coordination",
+          compartment: "Cytoplasm",
+          meters: { clearance: 100, polRate: 100, riboRate: 40, shield: 95 },
+          concepts: [
+            {
+              title: "Trigger Factor Cradle Docking",
+              definition: "The Trigger Factor (TF) chaperone permanently anchors itself directly to the ribosome's exit tunnel, forming a protective, hydrophobic cradle over the extrusion port. As the nascent polypeptide chain emerges, TF immediately engulfs it, physically shielding the raw, aggregation-prone hydrophobic segments from the crowded cytosol.",
+              citation: "Balchin et al., 2024, Molecular basis for cotranslational chaperone action in bacteria",
+              bridge: "Shielded from the cellular environment, the protein chain begins to slowly collapse into its first native-like structures."
+            },
+            {
+              title: "Intermediate Folding and TF Release",
+              definition: "As translation continues, the growing nascent chain naturally buries its hydrophobic regions and collapses into compact, partially folded intermediate structures within the TF cavity. This spontaneous burial disrupts the hydrophobic grip of Trigger Factor, allowing the nascent chain to physically escape the cradle via electrostatic repulsion.",
+              citation: "Balchin et al., 2024, Molecular basis for cotranslational chaperone action in bacteria",
+              bridge: "The partially folded chain slips out of the protective cradle, where it is immediately inspected by downstream molecular chaperones."
+            },
+            {
+              title: "DnaJ Conformational Scanning",
+              definition: "Once free of the ribosome, the DnaJ chaperone utilizes its massive, flexible beta-sandwich and zinc-binding domains to actively scan the escaped intermediates. It selectively clamps down on near-natively folded chains that still aberrantly expose vulnerable, unstructured hydrophobic grooves, trapping them to prevent misfolding.",
+              citation: "Balchin et al., 2024, Molecular basis for cotranslational chaperone action in bacteria",
+              bridge: "DnaJ acts as a surveyor, holding the unstable intermediate while simultaneously calling in heavy reinforcements to lock it down."
+            },
+            {
+              title: "DnaK Thermodynamic Locking",
+              definition: "DnaJ physically recruits the DnaK chaperone and stimulates its ATP hydrolysis, forcing DnaK to aggressively clamp its substrate-binding domain onto highly localized, sequence-diverse target sites on the nascent chain. This thermodynamic locking holds the specific segments in an unfolded state until the entire protein domain is fully extruded and ready to snap into its final 3D topology.",
+              citation: "Balchin et al., 2024, Molecular basis for cotranslational chaperone action in bacteria",
+              bridge: "With chaperones orchestrating its final folds, the Central Dogma is complete, resulting in a functioning, three-dimensional machine."
+            }
+          ]
+        }
+      ];
+
+      // ==========================================
+      // MOBILE NAVIGATION CONTROLS
+      // ==========================================
+      const mobileToggle = document.getElementById('mobile-menu-toggle');
+      const mobileClose = document.getElementById('mobile-menu-close');
+      const mobileMenu = document.getElementById('mobile-menu');
+
+      mobileToggle.addEventListener('click', () => {
+        mobileMenu.classList.remove('hidden');
+        mobileMenu.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+      });
+
+      const closeMobile = () => {
+        mobileMenu.classList.add('hidden');
+        mobileMenu.classList.remove('flex');
+        document.body.style.overflow = '';
+      };
+      mobileClose.addEventListener('click', closeMobile);
+
+      // ==========================================
+      // WINDOWED OPACITY CALCULATION
+      // ==========================================
+      function getWindowedOpacity(progress, start, peakStart, peakEnd, end) {
+        if (progress < start || progress > end) return 0;
+        if (progress >= peakStart && progress <= peakEnd) return 1;
+        if (progress < peakStart) {
+          return (progress - start) / (peakStart - start);
+        } else {
+          return (end - progress) / (end - peakEnd);
+        }
+      }
+
+      // ==========================================
+      // INTERACTIVE HANDBOOK ENGINE (ACADEMIC TABS)
+      // ==========================================
+      const tabsContainer = document.getElementById('handbook-tabs-container');
+      const activeChapterNum = document.getElementById('active-chapter-num');
+      const activeChapterTitle = document.getElementById('active-chapter-title');
+      const activeChapterCompartment = document.getElementById('active-chapter-compartment');
+      const chapterConceptsGrid = document.getElementById('chapter-concepts-grid');
+
+      function renderHandbookChapter(index) {
+        const chapter = STAGES_DATA[index];
+        activeChapterNum.textContent = chapter.chapterNum;
+        activeChapterTitle.textContent = chapter.phaseName;
+        activeChapterCompartment.textContent = chapter.compartment;
+
+        // Render concepts inside this chapter
+        chapterConceptsGrid.innerHTML = '';
+        chapter.concepts.forEach((concept, cIdx) => {
+          const item = document.createElement('div');
+          item.className = "bg-white border border-line rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 space-y-4 relative overflow-hidden group";
+          item.innerHTML = `
+            <!-- Top orange/fate accent bar -->
+            <div class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-cell to-fate opacity-75"></div>
+            
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-[9px] bg-cell/5 text-cell px-2 py-0.5 rounded font-bold uppercase">Concept ${chapter.chapterNum}.0${cIdx + 1}</span>
+                <h4 class="text-base font-bold text-stone-900 font-sans tracking-tight">${concept.title}</h4>
+              </div>
+              <span class="font-mono text-[9px] text-muted self-start sm:self-center bg-stone-100 px-2 py-0.5 rounded border border-line">
+                ${concept.citation}
+              </span>
+            </div>
+            
+            <div class="space-y-3">
+              <p class="text-stone-700 text-xs leading-relaxed pl-3.5 border-l-2 border-stone-200">
+                ${concept.definition}
+              </p>
+              
+              <!-- Developmental Bridge Box -->
+              <div class="bg-stone-50/50 rounded-xl p-4 border border-dashed border-line/80 mt-3">
+                <div class="flex items-center gap-1.5 mb-1.5">
+                  <svg class="w-3.5 h-3.5 text-cell" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7"/>
+                  </svg>
+                  <span class="font-mono text-[9px] tracking-widest text-cell font-bold uppercase">Developmental Bridge</span>
+                </div>
+                <p class="text-stone-600 text-[11px] leading-relaxed italic">
+                  ${concept.bridge}
+                </p>
+              </div>
+            </div>
+          `;
+          chapterConceptsGrid.appendChild(item);
+        });
+
+        // Update active class on tab buttons
+        document.querySelectorAll('.handbook-tab-btn').forEach((btn, bIdx) => {
+          if (bIdx === index) {
+            btn.classList.add('active-tab-btn');
+          } else {
+            btn.classList.remove('active-tab-btn');
+          }
+        });
+      }
+
+      // Populate tabs on load
+      STAGES_DATA.forEach((chapter, index) => {
+        const btn = document.createElement('button');
+        btn.className = "handbook-tab-btn px-4 py-2 text-[10px] font-mono rounded-full border border-line bg-white hover:border-cell hover:text-cell transition-all uppercase tracking-wider font-semibold";
+        btn.textContent = `CH 0${index + 1}: ${index === 0 ? "Chromatin" : index === 1 ? "Transcription" : index === 2 ? "Splicing" : index === 3 ? "Nuclear Export" : index === 4 ? "Assembly" : index === 5 ? "Elongation" : "Folding"}`;
+        btn.onclick = () => renderHandbookChapter(index);
+        tabsContainer.appendChild(btn);
+      });
+
+      // Default load chapter 0
+      renderHandbookChapter(0);
+
+      // ==========================================
+      // POPULATE SCIENTIFIC CITATIONS LIST (No Duplicates)
+      // ==========================================
+      const citationsList = document.getElementById('scientific-citations-list');
+      const uniqueCitations = new Set();
+      STAGES_DATA.forEach(ch => {
+        ch.concepts.forEach(con => uniqueCitations.add(con.citation));
+      });
+
+      uniqueCitations.forEach(cit => {
+        const li = document.createElement('li');
+        li.className = "border-l-2 border-line pl-3.5 py-1 font-mono text-[10px] text-muted";
+        
+        // Format author and rest
+        const commaIdx = cit.indexOf(',');
+        const author = commaIdx !== -1 ? cit.substring(0, commaIdx) : "Biochemical Ref";
+        const rest = commaIdx !== -1 ? cit.substring(commaIdx + 1) : cit;
+        li.innerHTML = `<span class="text-stone-900 font-semibold font-sans">${author}</span>, <span class="italic text-stone-500 font-serif">${rest}</span>`;
+        citationsList.appendChild(li);
+      });
+
+      // ==========================================
+      // SCROLLYTELLING SCENE CONTROLLER (GSAP)
+      // ==========================================
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (!prefersReducedMotion) {
+        // Elements references
+        const unifiedSvg = document.getElementById('unified-cascade-svg');
+        const transScene = document.getElementById('transcription-scene');
+        const translationScene = document.getElementById('translation-scene');
+        const dnaGuidePath = document.getElementById('dna-guide-path');
+        const polIIComplex = document.getElementById('pol-ii-complex');
+        const continuousMrna = document.getElementById('continuous-mrna');
+        const dockingTrna = document.getElementById('docking-trna');
+        const polypeptideChain = document.getElementById('polypeptide-chain');
+        const activeProtein = document.getElementById('active-protein-sphere');
+
+        const pathLength = dnaGuidePath.getTotalLength();
+        const polyChainLength = polypeptideChain ? polypeptideChain.getTotalLength() : 100;
+
+        // Initialize elements starting states
+        if (polypeptideChain) {
+          polypeptideChain.style.strokeDasharray = polyChainLength;
+          polypeptideChain.style.strokeDashoffset = polyChainLength;
+        }
+        activeProtein.style.opacity = 0;
+
+        // Setup mrna-full-track reference for sampling
+        const mrnaFullTrack = document.getElementById('mrna-full-track');
+        const mrnaTotalLength = mrnaFullTrack.getTotalLength();
+
+        // Function to compute dynamic mRNA path
+        function getmRNAPath(p) {
+          let activeLength = 0;
+          if (p < 0.4) {
+            // Stage 1: Transcription
+            const p1 = p / 0.4;
+            activeLength = p1 * mrnaTotalLength * 0.35;
+          } else if (p < 0.7) {
+            // Stage 2: Export
+            const p2 = (p - 0.4) / 0.3;
+            activeLength = mrnaTotalLength * (0.35 + p2 * 0.40);
+          } else {
+            // Stage 3: Translation
+            const p3 = (p - 0.7) / 0.3;
+            activeLength = mrnaTotalLength * (0.75 + p3 * 0.25);
+          }
+
+          // Sample points along the full master track to construct the sub-path
+          const numPoints = 24;
+          let d = "";
+          for (let i = 0; i <= numPoints; i++) {
+            const l = (i / numPoints) * activeLength;
+            const pt = mrnaFullTrack.getPointAtLength(l);
+            if (i === 0) {
+              d += `M ${pt.x},${pt.y}`;
+            } else {
+              d += ` L ${pt.x},${pt.y}`;
+            }
+          }
+          return d;
+        }
+
+        // Caption ranges maps
+        const captions = [
+          { element: document.getElementById('caption-1'), range: [0.0, 0.05, 0.18, 0.25] },
+          { element: document.getElementById('caption-2'), range: [0.25, 0.30, 0.44, 0.50] },
+          { element: document.getElementById('caption-3'), range: [0.50, 0.55, 0.68, 0.75] },
+          { element: document.getElementById('caption-4'), range: [0.75, 0.80, 0.94, 1.0] },
+        ];
+
+        // Core Animation Render Function
+        function renderAnimationProgress(progress) {
+          const dnaGuidePath = document.getElementById('template-guide-dna');
+          const pathLength = dnaGuidePath.getTotalLength();
+          
+          const unifiedSvg = document.getElementById('unified-trans-svg');
+          const transScene = document.getElementById('transcription-scene');
+          const translationScene = document.getElementById('translation-scene');
+          const polIIComplex = document.getElementById('pol-ii-complex');
+          const continuousMrna = document.getElementById('continuous-mrna');
+          
+          const dockingTrna = document.getElementById('docking-trna');
+          const polypeptideChain = document.getElementById('polypeptide-chain');
+          const activeProtein = document.getElementById('active-protein-sphere');
+          
+          const polyChainLength = polypeptideChain ? polypeptideChain.getTotalLength() : 180;
+
+          // 1. --- CAMERA PANNING VIEWBOX ---
+          let viewBoxX = 0;
+          if (progress < 0.4) {
+            viewBoxX = 0;
+          } else if (progress < 0.7) {
+            const pPan = (progress - 0.4) / 0.3;
+            viewBoxX = pPan * 600;
+          } else {
+            viewBoxX = 600;
+          }
+          unifiedSvg.setAttribute('viewBox', `${viewBoxX} 0 600 400`);
+
+          // 2. --- SCENE OPACITIES FOR OPTIMIZED TRANSITIONS ---
+          if (progress < 0.4) {
+            transScene.style.opacity = 1;
+            translationScene.style.opacity = 0;
+            document.getElementById('current-compartment-title').textContent = "Active Transcription Bubble";
+            document.getElementById('current-compartment-tag').textContent = "NUCLEUS";
+            document.getElementById('visual-stage-active').textContent = "Transcription Engine";
+          } else if (progress > 0.6) {
+            transScene.style.opacity = 0;
+            translationScene.style.opacity = 1;
+            document.getElementById('current-compartment-title').textContent = "Active Cytoplasmic Ribosome";
+            document.getElementById('current-compartment-tag').textContent = "CYTOPLASM";
+            document.getElementById('visual-stage-active').textContent = "Ribosomal Translation";
+          } else {
+            transScene.style.opacity = 1;
+            translationScene.style.opacity = 1;
+            document.getElementById('current-compartment-title').textContent = "Nuclear Envelope Junction";
+            document.getElementById('current-compartment-tag').textContent = "NUCLEAR PORE";
+            document.getElementById('visual-stage-active').textContent = "mRNA Translocation";
+          }
+
+          // 3. --- ANIMATE CONTINUOUS mRNA ---
+          continuousMrna.setAttribute('d', getmRNAPath(progress));
+
+          // 4. --- ANIMATION INDEPENDENT COMPONENTS ---
+          if (progress < 0.4) {
+            const p1 = progress / 0.4;
+            
+            // Pol II moves along DNA
+            const pt = dnaGuidePath.getPointAtLength(p1 * pathLength);
+            polIIComplex.setAttribute('transform', `translate(${pt.x}, ${pt.y})`);
+
+            // Pioneer factor scans elegantly ahead of the moving Pol II complex
+            const vib = Math.sin(progress * 110) * 1.5;
+            document.getElementById('pioneer-wedge').setAttribute('transform', `translate(${pt.x + 28 + vib}, 120)`);
+            
+            // Update meters
+            const clearanceVal = Math.round(15 + p1 * 70); // 15% to 85%
+            const polRateVal = Math.round(p1 * 80); // 0 to 80 nt/s
+            document.getElementById('meter-val-clearance').textContent = clearanceVal + '%';
+            document.getElementById('bar-clearance').style.width = clearanceVal + '%';
+            document.getElementById('meter-val-pol').textContent = polRateVal + ' nt/s';
+            document.getElementById('bar-pol').style.width = Math.min(p1 * 100, 100) + '%';
+            document.getElementById('meter-val-ribo').textContent = '0 aa/s';
+            document.getElementById('bar-ribo').style.width = '0%';
+            document.getElementById('meter-val-shield').textContent = '0%';
+            document.getElementById('bar-shield').style.width = '0%';
+
+            // Update status check badges
+            const compLabel = document.getElementById('compartment-status-label');
+            const compIcon = document.getElementById('compartment-status-icon');
+            const polyLabel = document.getElementById('polypeptide-status-label');
+            const polyIcon = document.getElementById('polypeptide-status-icon');
+            if (compLabel) { compLabel.textContent = "Nucleus"; compLabel.className = "font-bold text-emerald-700 uppercase"; }
+            if (compIcon) { compIcon.textContent = "✓"; compIcon.className = "w-3.5 h-3.5 rounded-full bg-emerald-100 border border-emerald-200 flex items-center justify-center text-emerald-700 text-[8px] font-bold"; }
+            if (polyLabel) { polyLabel.textContent = "Inactive"; polyLabel.className = "font-bold text-stone-500 uppercase"; }
+            if (polyIcon) { polyIcon.textContent = "○"; polyIcon.className = "w-3.5 h-3.5 rounded-full bg-stone-100 border border-stone-200 flex items-center justify-center text-stone-400 text-[8px] font-bold"; }
+
+            if (p1 < 0.5) {
+              document.getElementById('status-overlay-text').textContent = "Pioneer factor scanning closed chromatin; unwrapping DNA duplex to establish accessibility.";
+            } else {
+              document.getElementById('status-overlay-text').textContent = "RNA Polymerase II locking onto template strand; actively synthesizing pre-mRNA strand.";
+            }
+          } 
+          else if (progress < 0.7) {
+            const p2 = (progress - 0.4) / 0.3;
+            
+            // Pol II stationary at end of transcription
+            const pt = dnaGuidePath.getPointAtLength(pathLength);
+            polIIComplex.setAttribute('transform', `translate(${pt.x}, ${pt.y})`);
+            
+            // Update pioneer wedge to stay in front of Pol II
+            document.getElementById('pioneer-wedge').setAttribute('transform', `translate(${pt.x + 28}, 120)`);
+
+            // Update meters during nuclear export
+            const clearanceVal = Math.round(85 + p2 * 10); // 85% to 95%
+            const polRateVal = Math.round(80 + p2 * 10); // 80 to 90 nt/s
+            const riboRateVal = Math.round(p2 * 5); // 0 to 5 aa/s
+            const shieldVal = Math.round(p2 * 30); // 0 to 30%
+            
+            document.getElementById('meter-val-clearance').textContent = clearanceVal + '%';
+            document.getElementById('bar-clearance').style.width = clearanceVal + '%';
+            document.getElementById('meter-val-pol').textContent = polRateVal + ' nt/s';
+            document.getElementById('bar-pol').style.width = polRateVal + '%';
+            document.getElementById('meter-val-ribo').textContent = riboRateVal + ' aa/s';
+            document.getElementById('bar-ribo').style.width = riboRateVal + '%';
+            document.getElementById('meter-val-shield').textContent = shieldVal + '%';
+            document.getElementById('bar-shield').style.width = shieldVal + '%';
+
+            // Update status check badges
+            const compLabel = document.getElementById('compartment-status-label');
+            const compIcon = document.getElementById('compartment-status-icon');
+            const polyLabel = document.getElementById('polypeptide-status-label');
+            const polyIcon = document.getElementById('polypeptide-status-icon');
+            if (compLabel) { compLabel.textContent = "Nuclear Pore"; compLabel.className = "font-bold text-amber-700 uppercase"; }
+            if (compIcon) { compIcon.textContent = "✓"; compIcon.className = "w-3.5 h-3.5 rounded-full bg-amber-100 border border-amber-200 flex items-center justify-center text-amber-700 text-[8px] font-bold"; }
+            if (polyLabel) { polyLabel.textContent = "Initiating"; polyLabel.className = "font-bold text-amber-600 uppercase"; }
+            if (polyIcon) { polyIcon.textContent = "○"; polyIcon.className = "w-3.5 h-3.5 rounded-full bg-amber-100 border border-amber-200 flex items-center justify-center text-amber-600 text-[8px] font-bold"; }
+
+            document.getElementById('status-overlay-text').textContent = "Mature spliced mRNP crossing selective Nuclear Pore barrier; Dbp5 ATPase initiating cytoplasmic stripping.";
+          } 
+          else {
+            const p3 = (progress - 0.7) / 0.3;
+
+            // Animate single tRNA docking into the A-site (local coordinates: start 340,160 -> end 272,222)
+            if (p3 < 0.5) {
+              const t = p3 / 0.5; // 0 to 1
+              const startX = 340, startY = 160;
+              const endX = 272, endY = 222;
+              const curX = startX + (endX - startX) * t;
+              const curY = startY + (endY - startY) * t;
+              dockingTrna.setAttribute('transform', `translate(${curX}, ${curY}) scale(${0.75 + t * 0.25})`);
+              dockingTrna.style.opacity = t;
+            } else {
+              // tRNA docked and fully seated in the ribosome site
+              dockingTrna.setAttribute('transform', `translate(272, 222)`);
+              dockingTrna.style.opacity = 1;
+            }
+
+            // Polypeptide chain wiggles & extends out of the exit tunnel
+            if (polypeptideChain) {
+              const offset = polyChainLength * (1 - p3);
+              polypeptideChain.style.strokeDashoffset = offset;
+              polypeptideChain.style.opacity = p3;
+            }
+
+            // Wiggle polypeptide chain spheres and connection line to simulate active molecular wiggling
+            const wiggle = Math.sin(p3 * Math.PI * 8) * 1.5;
+            const chainSpheres = document.getElementById('growing-chain-spheres');
+            const chainLine = document.getElementById('polypeptide-chain-line');
+            if (chainSpheres) {
+              chainSpheres.setAttribute('transform', `translate(${wiggle}, 0)`);
+              chainSpheres.style.opacity = p3;
+            }
+            if (chainLine) {
+              chainLine.setAttribute('transform', `translate(${wiggle}, 0)`);
+            }
+
+            // Fully Folded Active Protein sphere fades in when complete
+            if (p3 >= 0.8) {
+              const pFold = (p3 - 0.8) / 0.2;
+              activeProtein.style.opacity = pFold;
+              activeProtein.setAttribute('transform', `translate(440, 95) scale(${0.5 + pFold * 0.5})`);
+            } else {
+              activeProtein.style.opacity = 0;
+            }
+
+            // Update meters during translation
+            document.getElementById('meter-val-clearance').textContent = '100%';
+            document.getElementById('bar-clearance').style.width = '100%';
+            document.getElementById('meter-val-pol').textContent = '100 nt/s';
+            document.getElementById('bar-pol').style.width = '100%';
+
+            const riboRateVal = Math.round(5 + p3 * 35); // 5 to 40 aa/s
+            const shieldVal = Math.round(30 + p3 * 65); // 30% to 95%
+            
+            document.getElementById('meter-val-ribo').textContent = riboRateVal + ' aa/s';
+            document.getElementById('bar-ribo').style.width = riboRateVal * 2 + '%';
+            document.getElementById('meter-val-shield').textContent = shieldVal + '%';
+            document.getElementById('bar-shield').style.width = shieldVal + '%';
+
+            // Update status check badges
+            const compLabel = document.getElementById('compartment-status-label');
+            const compIcon = document.getElementById('compartment-status-icon');
+            const polyLabel = document.getElementById('polypeptide-status-label');
+            const polyIcon = document.getElementById('polypeptide-status-icon');
+            if (compLabel) { compLabel.textContent = "Cytoplasm"; compLabel.className = "font-bold text-indigo-700 uppercase"; }
+            if (compIcon) { compIcon.textContent = "✓"; compIcon.className = "w-3.5 h-3.5 rounded-full bg-indigo-100 border border-indigo-200 flex items-center justify-center text-indigo-700 text-[8px] font-bold"; }
+            
+            if (polyLabel) {
+              if (p3 >= 0.8) {
+                polyLabel.textContent = "ACTIVE FOLDED";
+                polyLabel.className = "font-bold text-emerald-700 uppercase";
+              } else {
+                polyLabel.textContent = "Translating";
+                polyLabel.className = "font-bold text-indigo-600 uppercase";
+              }
+            }
+            if (polyIcon) {
+              if (p3 >= 0.8) {
+                polyIcon.textContent = "✓";
+                polyIcon.className = "w-3.5 h-3.5 rounded-full bg-emerald-100 border border-emerald-200 flex items-center justify-center text-emerald-700 text-[8px] font-bold";
+              } else {
+                polyIcon.textContent = "●";
+                polyIcon.className = "w-3.5 h-3.5 rounded-full bg-indigo-100 border border-indigo-200 flex items-center justify-center text-indigo-600 text-[8px] font-bold animate-pulse";
+              }
+            }
+
+            if (p3 < 0.5) {
+              document.getElementById('status-overlay-text').textContent = "Ribosome 40S/60S complex joined; tRNA molecules bringing specific amino acids to the A-site.";
+            } else {
+              document.getElementById('status-overlay-text').textContent = "Trigger Factor hydrophobic cradle sheltering the emerging chain; DnaK chaperone coordinating final folding.";
+            }
+          }
+
+          // --- WINDOWED OPACITY FOR CAPTIONS ---
+          captions.forEach(cap => {
+            const op = getWindowedOpacity(progress, cap.range[0], cap.range[1], cap.range[2], cap.range[3]);
+            cap.element.style.opacity = op;
+            cap.element.style.transform = `translateY(${(1 - op) * 15}px)`;
+            if (op > 0.05) {
+              cap.element.classList.add('active');
+            } else {
+              cap.element.classList.remove('active');
+            }
+          });
+
+          }
+        }
+
+        if (!prefersReducedMotion) {
+          // Initialize GSAP and register ScrollTrigger
+          gsap.registerPlugin(ScrollTrigger);
+
+          ScrollTrigger.create({
+            trigger: "#scrolly-trigger",
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 0.5,
+            onUpdate: (self) => {
+              renderAnimationProgress(self.progress);
+            }
+          });
+
+          // Initial render state
+          renderAnimationProgress(0);
+        } else {
+          // Fallback for prefers-reduced-motion: render static visible captions
+          const captions = document.querySelectorAll('.caption-fade-box');
+          captions.forEach((cap) => {
+            cap.style.position = 'relative';
+            cap.style.opacity = '1';
+            cap.style.transform = 'none';
+            cap.classList.add('active');
+          });
+          
+          const triggerSec = document.getElementById('scrolly-trigger');
+          triggerSec.style.height = 'auto';
+          const stickySec = document.querySelector('.scrolly-sticky');
+          stickySec.style.position = 'relative';
+          stickySec.style.height = 'auto';
+
+          document.getElementById('transcription-scene').style.opacity = 1;
+          document.getElementById('translation-scene').style.opacity = 1;
+        }
+    </script>
+  </body>
+</html>

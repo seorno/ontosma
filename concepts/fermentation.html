@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Concept 05: Fermentation — Ontosma</title>
+    <!-- Tailwind Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              ink: 'var(--ink)',
+              panel: 'var(--panel)',
+              'panel-2': 'var(--panel-2)',
+              cell: 'var(--cell)',
+              'cell-soft': 'var(--cell-soft)',
+              fate: 'var(--fate)',
+              text: 'var(--text)',
+              muted: 'var(--muted)',
+              line: 'var(--line)',
+            },
+            fontFamily: {
+              sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+              serif: ['var(--font-serif)', 'Georgia', 'serif'],
+              mono: ['var(--font-mono)', 'SFMono-Regular', 'monospace'],
+            }
+          }
+        }
+      }
+    </script>
+    <!-- Shared Brand Stylesheet -->
+    <link rel="stylesheet" href="../assets/style.css">
+    <!-- GSAP & ScrollTrigger CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  </head>
+  <body class="bg-ink text-text selection:bg-cell/30 selection:text-cell min-h-screen flex flex-col">
+    
+    <!-- Header Navigation -->
+    <header class="glass-header fixed top-0 left-0 w-full z-50">
+      <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <a id="nav-logo" href="../index.html" class="flex items-center gap-2 group">
+          <span class="font-serif text-xl md:text-2xl font-bold tracking-tight text-text group-hover:text-cell transition-colors uppercase">
+            Ontosma
+          </span>
+          <span class="w-2 h-2 bg-cell border border-stone-950"></span>
+        </a>
+        
+        <nav class="hidden md:flex items-center gap-8 font-mono text-sm tracking-wider">
+          <a id="nav-link-newsletter" href="../newsletter.html" class="text-muted hover:text-cell transition-colors py-2">DAILY DIGEST</a>
+          <a id="nav-link-columns" href="../columns.html" class="text-muted hover:text-cell transition-colors py-2">COLUMNS</a>
+          <a id="nav-link-concepts" href="../concepts.html" class="text-cell transition-colors py-2 border-b-2 border-cell">CONCEPTS</a>
+          <a id="nav-link-about" href="../index.html#about" class="text-muted hover:text-cell transition-colors py-2">ABOUT</a>
+          <a id="nav-cta" href="../index.html#newsletter" class="btn-pill btn-pill-secondary py-2 px-5 text-xs">SUBSCRIBE</a>
+        </nav>
+
+        <!-- Mobile Nav Toggle Indicator -->
+        <button id="mobile-menu-toggle" class="md:hidden text-muted hover:text-cell p-2" aria-label="Toggle Menu">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Mobile Navigation Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 bg-ink z-40 flex-col justify-center items-center gap-8 font-mono text-lg tracking-widest hidden overflow-y-auto">
+      <button id="mobile-menu-close" class="absolute top-6 right-6 text-muted hover:text-cell p-2" aria-label="Close Menu">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      <a id="mobile-link-newsletter" href="../newsletter.html" class="text-muted hover:text-cell transition-colors">DAILY DIGEST</a>
+      <a id="mobile-link-columns" href="../columns.html" class="text-muted hover:text-cell transition-colors">COLUMNS</a>
+      <a id="mobile-link-concepts" href="../concepts.html" class="text-cell transition-colors font-bold">CONCEPTS</a>
+      <a id="mobile-link-about" href="../index.html#about" class="text-muted hover:text-cell transition-colors">ABOUT</a>
+    </div>
+
+    <!-- Main Scroll Container -->
+    <main class="flex-grow pt-20">
+      
+      <!-- CONCEPT HERO -->
+      <section id="concept-hero" class="relative py-24 px-6 border-b border-line bg-ink text-center">
+        <!-- Grid overlay -->
+        <div class="absolute inset-0 svg-bg-grid opacity-50 pointer-events-none"></div>
+        <div class="absolute w-96 h-96 rounded-full glowing-orb opacity-10 pointer-events-none"></div>
+
+        <div class="max-w-3xl mx-auto space-y-6 relative z-10 mt-16">
+          <span class="font-mono text-xs tracking-[0.25em] text-cell bg-cell-soft border border-line px-4 py-1.5 uppercase">
+            CONCEPT 05 · MOLECULAR FOOD SCIENCE
+          </span>
+          <h1 class="text-5xl md:text-7xl text-text font-normal leading-tight">
+            Fermentation
+          </h1>
+          <p class="text-xl md:text-2xl font-serif italic text-fate">
+            "Metabolic life under darkness."
+          </p>
+          <p class="text-muted text-base md:text-lg max-w-xl mx-auto leading-relaxed font-sans">
+            How do simple micro-organisms alter the flavor and longevity of food when starved of oxygen? Scroll to witness glycolysis and the anaerobic conversion of simple sugars.
+          </p>
+        </div>
+
+        <!-- Scroll Indicator overlay -->
+        <div class="absolute bottom-8 flex flex-col items-center gap-2 pointer-events-none">
+          <span class="font-mono text-[9px] tracking-widest text-muted">SCROLL TO FERMENT</span>
+          <div class="w-1 h-8 rounded-full bg-line relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1/2 bg-cell rounded-full animate-bounce"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCROLLYTELLING CONTAINER -->
+      <section id="scrolly-trigger" class="scrolly-container h-[400vh]">
+        <div class="scrolly-sticky px-6 py-12">
+          <!-- Grid Background -->
+          <div class="absolute inset-0 svg-bg-grid opacity-40"></div>
+
+          <div class="max-w-7xl mx-auto w-full flex flex-col lg:flex-row items-center gap-12 relative z-10">
+            
+            <!-- Interactive Visual Canvas -->
+            <div class="w-full lg:w-3/5 h-auto flex flex-col items-center justify-center relative bg-panel border border-line rounded-2xl p-6 shadow-sm">
+              <svg id="fermentation-svg" class="w-full h-full" viewBox="0 0 600 400" fill="none" preserveAspectRatio="xMidYMid meet">
+                
+                <!-- Microbial Cell Wall (Curved bilayer) -->
+                <path d="M 50,300 C 120,300 200,320 280,260 C 350,210 400,120 400,50" stroke="rgba(28, 25, 23, 0.1)" stroke-width="4" fill="none" />
+                <path d="M 45,305 C 115,305 195,325 275,265 C 345,215 395,125 395,55" stroke="var(--cell)" stroke-opacity="0.25" stroke-width="1.5" fill="none" />
+                
+                <!-- Translocation Channel / Gap in membrane -->
+                <circle cx="135" cy="190" r="15" fill="var(--panel)" stroke="rgba(28, 25, 23, 0.15)" stroke-width="2" />
+                
+                <!-- Sugar Flow Motion Path guide -->
+                <path id="sugar-path" d="M 135,50 C 135,120 135,160 135,190 C 135,220 170,200 210,190 C 250,180 280,185 290,185 C 330,185 360,240 420,300" stroke="none" fill="none" />
+                
+                <!-- Drawn active pathway outline (revealed as scroll progress increases) -->
+                <path id="sugar-path-active" d="M 135,50 C 135,120 135,160 135,190 C 135,220 170,200 210,190 C 250,180 280,185 290,185 C 330,185 360,240 420,300" class="svg-motion-path-active" />
+                
+                <!-- Labels inside SVG -->
+                <text x="10" y="320" fill="var(--muted)" font-family="Courier New" font-size="8" font-weight="bold" tracking-wider>EXTRACELLULAR</text>
+                <text x="500" y="320" fill="var(--muted)" font-family="Courier New" font-size="8" font-weight="bold" tracking-wider>MICROBIAL CYTOPLASM</text>
+
+                <!-- Molecule representations -->
+                <!-- 1. Glucose (Hexose) -->
+                <g id="glucose-molecule" class="transition-opacity duration-200">
+                  <polygon points="120,80 135,70 150,80 150,95 135,105 120,95" fill="rgba(234, 88, 12, 0.05)" stroke="var(--cell)" stroke-width="2" id="glucose-hex" />
+                  <text x="135" y="91" text-anchor="middle" fill="var(--cell)" font-family="Courier New" font-size="8" font-weight="bold">C6</text>
+                </g>
+
+                <!-- 2. Pyruvate split -->
+                <g id="pyruvate-split" class="opacity-0 transition-opacity duration-200">
+                  <circle cx="280" cy="190" r="8" fill="var(--cell)" />
+                  <circle cx="300" cy="180" r="8" fill="var(--cell)" />
+                  <text x="290" y="210" text-anchor="middle" fill="var(--cell)" font-family="Courier New" font-size="8" font-weight="bold">2x PYRUVATE (C3)</text>
+                </g>
+
+                <!-- 3. Lactate Outflow -->
+                <g id="lactic-out" class="opacity-0 transition-opacity duration-200">
+                  <circle cx="420" cy="300" r="10" fill="var(--fate)" />
+                  <text x="420" y="325" text-anchor="middle" fill="var(--fate)" font-family="Courier New" font-size="8" font-weight="bold">LACTATE</text>
+                </g>
+
+                <!-- Gas Bubbles from fermentation (CO2) -->
+                <g id="co2-gas">
+                  <circle cx="480" cy="240" r="5" fill="none" stroke="rgba(234, 88, 12, 0.3)" stroke-width="1.2" id="bubble-1" />
+                  <circle cx="510" cy="190" r="7" fill="none" stroke="rgba(234, 88, 12, 0.3)" stroke-width="1.2" id="bubble-2" />
+                  <circle cx="495" cy="120" r="4" fill="none" stroke="rgba(234, 88, 12, 0.3)" stroke-width="1.2" id="bubble-3" />
+                </g>
+
+                <!-- Small Contextual labels -->
+                <text x="100" y="40" fill="var(--muted)" font-family="Courier New" font-size="9" font-weight="bold" tracking-wider>ANAEROBIC MEDIUM</text>
+                <text x="135" y="150" text-anchor="middle" fill="var(--muted)" font-family="Courier New" font-size="7">GLUT CHANNEL</text>
+              </svg>
+              
+              <div class="absolute bottom-4 left-4 font-mono text-[9px] text-muted bg-white/80 px-2 py-1 border border-line rounded">
+                BIOCHEMICAL SCHEMATIC · ACTIVE SYSTEM
+              </div>
+            </div>
+
+            <!-- Scrollytelling captions sidebar -->
+            <div class="w-full lg:w-2/5 flex flex-col relative">
+              <!-- Section step text blocks -->
+              <!-- Step 1 -->
+              <div class="h-screen flex items-center justify-start py-12">
+                <div id="caption-1" class="caption-fade-box">
+                  <span class="font-mono text-[10px] text-cell uppercase tracking-wider block mb-2 font-medium">Stage I · Membrane Translocation</span>
+                  <h4 class="text-xl text-stone-900 font-medium mb-2">Glucose Influx</h4>
+                  <p class="text-muted text-xs leading-relaxed">
+                    Extracellular glucose (C6H12O6) targets the micro-organism membrane, passing freely through selective glucose transporter channels (GLUT) into the anaerobic cellular cytoplasm.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Step 2 -->
+              <div class="h-screen flex items-center justify-start py-12">
+                <div id="caption-2" class="caption-fade-box">
+                  <span class="font-mono text-[10px] text-cell uppercase tracking-wider block mb-2 font-medium">Stage II · Glycolytic Pathway</span>
+                  <h4 class="text-xl text-stone-900 font-medium mb-2">Glycolysis Split</h4>
+                  <p class="text-muted text-xs leading-relaxed">
+                    Deep inside the cytoplasm, the hexose ring is broken down via glycolysis. Enzymes convert one glucose molecule into two molecules of 3-carbon pyruvate, liberating raw ATP energy.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Step 3 -->
+              <div class="h-screen flex items-center justify-start py-12">
+                <div id="caption-3" class="caption-fade-box">
+                  <span class="font-mono text-[10px] text-cell uppercase tracking-wider block mb-2 font-medium">Stage III · Anaerobic Fate</span>
+                  <h4 class="text-xl text-stone-900 font-medium mb-2">Pyruvate Reduction</h4>
+                  <p class="text-muted text-xs leading-relaxed">
+                    Deprived of oxygen, the cell cannot undergo cellular respiration. Instead, NADH transfers electrons directly to pyruvate, reducing it to lactic acid (or ethanol and carbon dioxide).
+                  </p>
+                </div>
+              </div>
+
+              <!-- Step 4 -->
+              <div class="h-screen flex items-center justify-start py-12">
+                <div id="caption-4" class="caption-fade-box">
+                  <span class="font-mono text-[10px] text-cell uppercase tracking-wider block mb-2 font-medium">Stage IV · Food Preservation</span>
+                  <h4 class="text-xl text-stone-900 font-medium mb-2">Flavor & Acidification</h4>
+                  <p class="text-muted text-xs leading-relaxed">
+                    Lactic acid accumulates, dropping the ambient pH value of the food environment. This acidity inhibits food-spoiling pathogens while synthesizing rich, complex volatile flavors.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- STATIC DETAILED EXPLANATION -->
+      <section id="mechanism-explanation" class="py-24 px-6 border-t border-line bg-panel relative">
+        <div class="max-w-4xl mx-auto space-y-8">
+          <div class="space-y-3">
+            <span class="font-mono text-xs text-cell uppercase tracking-wider block font-semibold">THE CULINARY REVOLUTION</span>
+            <h2 class="text-3xl md:text-5xl text-stone-900 font-normal">Metabolic Waste as Culinary Art</h2>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-muted text-base leading-relaxed">
+            <p>
+              To the microbiologist, fermentation is simply a desperate survival mechanism: a way for microscopic cells to continue generating basic cellular energy (ATP) without the luxury of oxygen. By using metabolic intermediates to capture electrons, yeast and bacteria dump their chemical end-products directly into their surroundings.
+            </p>
+            <p>
+              To the culinary craftsman, however, those same metabolic "waste products" are the literal foundations of gastronomy. Lactic acid yields clean, mouth-puckering sourness; ethanol yields the warmth of fine wine; and carbon dioxide creates the airy, structural crumb of sourdough bread. Through darkness and starvation, flavor is born.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA & BIBLIOGRAPHY -->
+      <section id="citations-and-cta" class="py-24 px-6 border-t border-line bg-white relative">
+        <div class="max-w-4xl mx-auto text-center space-y-12">
+          
+          <!-- Citation Block -->
+          <div class="border-t border-b border-line py-8 max-w-2xl mx-auto space-y-4">
+            <span class="font-mono text-[10px] text-muted tracking-widest block uppercase font-semibold">SELECTED CITATIONS</span>
+            <ul class="space-y-2 font-mono text-xs text-muted leading-relaxed">
+              <li>[1] Nelson, D. L., & Cox, M. M. (2017). <span class="italic text-stone-900">Lehninger Principles of Biochemistry</span>. (7th ed.).</li>
+              <li>[2] Katz, S. E. (2012). <span class="italic text-stone-900">The Art of Fermentation</span>. Chelsea Green Publishing.</li>
+              <li>[3] Gänzle, M. G. (2015). <span class="italic text-stone-900">Lactic acid bacteria in sourdough fermentation</span>. Food Microbiology.</li>
+            </ul>
+          </div>
+
+          <div class="space-y-6">
+            <h3 class="text-2xl text-stone-900 font-normal font-serif italic">How do starter cultures resemble medical labs?</h3>
+            <p class="text-muted text-sm max-w-md mx-auto">
+              Our final synthesis. Discover how kitchen crocks behave exactly like sterile incubator vessels, drawing a deliberate line across molecular fields.
+            </p>
+            <div class="pt-4 flex justify-center gap-4">
+              <a href="./food-cultures.html" class="btn-pill btn-pill-primary">
+                Explore Food Cultures & Microbiomes
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-line py-16 px-6 mt-auto">
+      <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12">
+        
+        <!-- Column 1: Brand Info -->
+        <div class="md:col-span-6 space-y-4">
+          <div class="flex items-center gap-2">
+            <span class="font-serif text-lg font-semibold tracking-tight text-stone-900">Ontosma</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-cell shadow-[0_0_8px_#ea580c]"></span>
+          </div>
+          <p class="text-muted text-sm leading-relaxed max-w-sm">
+            An independent educational companion and newsletter bringing rigorous, plain-language clarity to stem cell developmental biology and molecular food-culture science.
+          </p>
+        </div>
+
+        <!-- Column 2: Explore Links -->
+        <div class="md:col-span-3 space-y-4">
+          <h4 class="font-mono text-xs tracking-wider text-cell uppercase font-semibold">EXPLORE</h4>
+          <ul class="space-y-2 text-sm font-mono text-muted">
+            <li><a href="../index.html" class="hover:text-cell transition-colors">Homepage</a></li>
+            <li><a href="../newsletter.html" class="hover:text-cell transition-colors">Daily Digest</a></li>
+            <li><a href="../columns.html" class="hover:text-cell transition-colors">Weekly Columns</a></li>
+            <li><a href="../concepts.html" class="hover:text-cell transition-colors">Concept Library</a></li>
+            <li><a href="../index.html#about" class="hover:text-cell transition-colors">About Us</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Elsewhere Links -->
+        <div class="md:col-span-3 space-y-4">
+          <h4 class="font-mono text-xs tracking-wider text-cell uppercase font-semibold">ELSEWHERE</h4>
+          <ul class="space-y-2 text-sm font-mono text-muted">
+            <li><a href="https://x.com" target="_blank" rel="noopener noreferrer" class="hover:text-cell transition-colors">X / Twitter</a></li>
+            <li><a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="hover:text-cell transition-colors">LinkedIn</a></li>
+            <li><a href="https://threads.net" target="_blank" rel="noopener noreferrer" class="hover:text-cell transition-colors">Threads</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="max-w-7xl mx-auto border-t border-line mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <span class="font-mono text-[10px] text-muted">
+          &copy; 2026 Ontosma. All rights reserved.
+        </span>
+        <span class="font-mono text-[10px] text-muted italic">
+          Deciphering the blueprints of growth and preservation.
+        </span>
+      </div>
+    </footer>
+
+    <!-- GSAP / ScrollTrigger Engine Implementation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script>
+      // Register GSAP plugins
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Mobile Nav Toggle
+      const mobileToggle = document.getElementById('mobile-menu-toggle');
+      const mobileClose = document.getElementById('mobile-menu-close');
+      const mobileMenu = document.getElementById('mobile-menu');
+
+      mobileToggle.addEventListener('click', () => {
+        mobileMenu.classList.remove('hidden');
+        mobileMenu.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+      });
+
+      const closeMobile = () => {
+        mobileMenu.classList.add('hidden');
+        mobileMenu.classList.remove('flex');
+        document.body.style.overflow = '';
+      };
+
+      mobileClose.addEventListener('click', closeMobile);
+
+      // Helper for windowed opacity
+      function getWindowedOpacity(progress, start, peakStart, peakEnd, end) {
+        if (progress < start || progress > end) return 0;
+        if (progress >= peakStart && progress <= peakEnd) return 1;
+        if (progress < peakStart) {
+          return (progress - start) / (peakStart - start);
+        } else {
+          return (end - progress) / (end - peakEnd);
+        }
+      }
+
+      // Check prefers-reduced-motion
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (!prefersReducedMotion) {
+        // Scrollytelling Animation
+        const sugarPath = document.getElementById('sugar-path');
+        const activePath = document.getElementById('sugar-path-active');
+        const glucose = document.getElementById('glucose-molecule');
+        const pyruvate = document.getElementById('pyruvate-split');
+        const lactate = document.getElementById('lactic-out');
+        const bubble1 = document.getElementById('bubble-1');
+        const bubble2 = document.getElementById('bubble-2');
+        const bubble3 = document.getElementById('bubble-3');
+        
+        const pathLength = sugarPath.getTotalLength();
+
+        // Initialize active path dashes
+        activePath.style.strokeDasharray = pathLength;
+        activePath.style.strokeDashoffset = pathLength;
+
+        // Caption elements
+        const captions = [
+          { element: document.getElementById('caption-1'), range: [0.0, 0.05, 0.18, 0.28] },
+          { element: document.getElementById('caption-2'), range: [0.28, 0.33, 0.48, 0.55] },
+          { element: document.getElementById('caption-3'), range: [0.55, 0.60, 0.78, 0.82] },
+          { element: document.getElementById('caption-4'), range: [0.82, 0.87, 0.96, 1.0] },
+        ];
+
+        function renderAnimationProgress(progress) {
+          progress = Math.max(0, Math.min(1, progress));
+
+          // Update Active Path outline
+          const drawLength = pathLength * progress;
+          activePath.style.strokeDashoffset = pathLength - drawLength;
+
+          // Get point along path for position
+          const point = sugarPath.getPointAtLength(progress * pathLength);
+          
+          // Move Glucose molecule (only during glycolysis phase progress < 0.5)
+          if (progress < 0.5) {
+            glucose.style.transform = `translate(${point.x - 135}px, ${point.y - 87}px)`;
+            glucose.style.opacity = 1 - (progress * 2);
+            pyruvate.style.opacity = 0;
+          } else {
+            glucose.style.opacity = 0;
+            pyruvate.style.opacity = 1;
+            
+            // Pulse Pyruvate scale
+            const pScale = 1 + Math.sin((progress - 0.5) * Math.PI * 4) * 0.15;
+            pyruvate.style.transform = `scale(${pScale})`;
+            pyruvate.style.transformOrigin = '290px 185px';
+          }
+
+          // Show Lactate outflow
+          if (progress > 0.6) {
+            lactate.style.opacity = (progress - 0.6) / 0.4;
+            lactate.style.transform = `translate(${(progress - 0.6) * 30}px, ${(progress - 0.6) * 15}px)`;
+          } else {
+            lactate.style.opacity = 0;
+          }
+
+          // Gas Bubble animations (float up based on scroll progress)
+          bubble1.setAttribute('cy', 240 - (progress * 150));
+          bubble1.setAttribute('cx', 480 + Math.sin(progress * Math.PI * 6) * 10);
+          bubble2.setAttribute('cy', 190 - (progress * 120));
+          bubble2.setAttribute('cx', 510 + Math.cos(progress * Math.PI * 4) * 8);
+          bubble3.setAttribute('cy', 120 - (progress * 80));
+          bubble3.setAttribute('cx', 495 + Math.sin(progress * Math.PI * 8) * 12);
+
+          // Windowed Opacity for Captions
+          captions.forEach(cap => {
+            const op = getWindowedOpacity(progress, cap.range[0], cap.range[1], cap.range[2], cap.range[3]);
+            cap.element.style.opacity = op;
+            cap.element.style.transform = `translateY(${(1 - op) * 15}px)`;
+            if (op > 0.1) {
+              cap.element.classList.add('active');
+            } else {
+              cap.element.classList.remove('active');
+            }
+          });
+        }
+
+        // GSAP ScrollTrigger Setup
+        ScrollTrigger.create({
+          trigger: "#scrolly-trigger",
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 0.5,
+          onUpdate: (self) => {
+            renderAnimationProgress(self.progress);
+          }
+        });
+
+        // Initialize state
+        renderAnimationProgress(0);
+      } else {
+        // Fallback for prefers-reduced-motion
+        const captions = document.querySelectorAll('.caption-fade-box');
+        captions.forEach((cap) => {
+          cap.style.position = 'relative';
+          cap.style.opacity = '1';
+          cap.style.transform = 'none';
+          cap.classList.add('active');
+        });
+        
+        const triggerSec = document.getElementById('scrolly-trigger');
+        triggerSec.style.height = 'auto';
+        const stickySec = document.querySelector('.scrolly-sticky');
+        stickySec.style.position = 'relative';
+        stickySec.style.height = 'auto';
+      }
+    </script>
+  </body>
+</html>

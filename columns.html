@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Ontosma Journal — Weekly Editorials & Deep-Dive Columns</title>
+    <!-- Tailwind Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              ink: 'var(--ink)',
+              panel: 'var(--panel)',
+              'panel-2': 'var(--panel-2)',
+              cell: 'var(--cell)',
+              'cell-soft': 'var(--cell-soft)',
+              fate: 'var(--fate)',
+              text: 'var(--text)',
+              muted: 'var(--muted)',
+              line: 'var(--line)',
+            },
+            fontFamily: {
+              sans: ['var(--font-sans)', '"Helvetica Neue"', 'Arial', 'sans-serif'],
+              serif: ['var(--font-serif)', 'Georgia', 'serif'],
+              mono: ['var(--font-mono)', '"Courier New"', 'Courier', 'monospace'],
+            }
+          }
+        }
+      }
+    </script>
+    <!-- Shared Brand Stylesheet -->
+    <link rel="stylesheet" href="./assets/style.css">
+    <style>
+      .topic-filter-btn.active {
+        background-color: var(--cell);
+        color: #ffffff;
+        border-color: var(--cell);
+      }
+    </style>
+  </head>
+  <body class="bg-ink text-text selection:bg-cell/30 selection:text-cell min-h-screen flex flex-col font-sans">
+    
+    <!-- Header Navigation -->
+    <header class="glass-header fixed top-0 left-0 w-full z-50">
+      <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <a id="nav-logo" href="./index.html" class="flex items-center gap-2 group">
+          <span class="font-serif text-xl md:text-2xl font-bold tracking-tight text-stone-900 group-hover:text-cell transition-colors uppercase">
+            Ontosma
+          </span>
+          <span class="w-2.5 h-2.5 bg-cell border border-stone-950"></span>
+        </a>
+        
+        <nav class="hidden md:flex items-center gap-8 font-mono text-sm tracking-wider">
+          <a id="nav-link-newsletter" href="./newsletter.html" class="text-muted hover:text-cell transition-colors py-2">DAILY DIGEST</a>
+          <a id="nav-link-columns" href="./columns.html" class="text-cell transition-colors py-2 border-b-2 border-cell font-bold">COLUMNS</a>
+          <a id="nav-link-concepts" href="./concepts.html" class="text-muted hover:text-cell transition-colors py-2">CONCEPTS</a>
+          <a id="nav-cta" href="#subscribe-section" class="btn-pill btn-pill-secondary py-2 px-5 text-xs">SUBSCRIBE</a>
+        </nav>
+
+        <!-- Mobile Nav Toggle Indicator -->
+        <button id="mobile-menu-toggle" class="md:hidden text-muted hover:text-cell p-2" aria-label="Toggle Menu">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Mobile Navigation Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 bg-ink z-40 flex-col justify-center items-center gap-8 font-mono text-lg tracking-widest hidden">
+      <button id="mobile-menu-close" class="absolute top-6 right-6 text-muted hover:text-cell p-2" aria-label="Close Menu">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      <a id="mobile-link-newsletter" href="./newsletter.html" class="text-muted hover:text-cell transition-colors">DAILY DIGEST</a>
+      <a id="mobile-link-columns" href="./columns.html" class="text-cell font-bold transition-colors">COLUMNS</a>
+      <a id="mobile-link-concepts" href="./concepts.html" class="text-muted hover:text-cell transition-colors">CONCEPTS</a>
+    </div>
+
+    <!-- Main Content wrapper -->
+    <main class="flex-grow pt-20">
+      
+      <!-- HERO TITLE -->
+      <section id="columns-hero" class="relative py-16 md:py-20 px-6 overflow-hidden border-b border-line">
+        <div class="absolute inset-0 svg-bg-grid opacity-30 pointer-events-none"></div>
+        <div class="absolute w-[350px] h-[350px] rounded-full glowing-orb opacity-10 -left-10 -top-10 pointer-events-none"></div>
+        
+        <div class="max-w-4xl mx-auto text-center space-y-4 relative z-10">
+          <div class="inline-flex items-center gap-2 px-3 py-1 bg-cell/10 border border-cell/20 rounded-full">
+            <span class="font-mono text-[10px] tracking-widest text-cell uppercase font-bold">★ WEEKLY EDITORIAL ARCHIVE</span>
+          </div>
+          <h1 class="text-3xl md:text-5xl lg:text-6xl text-stone-900 font-serif font-normal leading-tight">
+            Weekly Columns &amp; Deep-Dive Essays
+          </h1>
+          <p class="text-muted text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+            In-depth long-form editorials analyzing bioprocess engineering, cell mechanics, epigenetic reprogramming, adult neurogenesis, and synthetic biology with complete citation archives.
+          </p>
+        </div>
+      </section>
+
+      <!-- MAIN CONTENT SECTION -->
+      <section class="py-12 px-6">
+        <div class="max-w-6xl mx-auto space-y-10">
+          
+          <!-- Filter Controls -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-line pb-6">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[10px] uppercase text-muted font-bold tracking-wider">TOPIC FILTER:</span>
+              <div id="column-topic-filters" class="flex flex-wrap gap-2">
+                <!-- Dynamically populated topic filter buttons -->
+              </div>
+            </div>
+            <div class="font-mono text-xs text-stone-500 font-semibold" id="columns-count-label">
+              Showing 4 Essays
+            </div>
+          </div>
+
+          <!-- COLUMN READER VIEW (Initially Hidden) -->
+          <article id="column-reader" class="hidden space-y-8 bg-panel border border-line p-6 md:p-12 rounded-3xl shadow-sm relative">
+            <div class="flex items-center justify-between border-b border-line pb-6 flex-wrap gap-4">
+              <button onclick="closeColumnReader()" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-ink hover:bg-cell/10 border border-line hover:border-cell/30 text-cell font-mono text-xs font-bold transition-all">
+                <span>←</span> Back to Columns Feed
+              </button>
+              <div class="flex items-center gap-3 font-mono text-xs">
+                <span id="reader-column-code" class="text-cell font-bold bg-cell/10 border border-cell/20 px-3 py-1 rounded-md"></span>
+                <span id="reader-column-date" class="text-stone-600 font-semibold"></span>
+              </div>
+            </div>
+
+            <!-- Article Header -->
+            <div class="space-y-4 max-w-3xl mx-auto">
+              <div class="flex items-center gap-3 flex-wrap">
+                <span id="reader-column-topic" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cell text-white font-mono text-xs font-semibold uppercase"></span>
+                <span id="reader-column-readtime" class="font-mono text-xs text-muted bg-ink px-2.5 py-1 border border-line rounded-md font-semibold"></span>
+              </div>
+              
+              <h2 id="reader-column-title" class="font-serif text-3xl md:text-4xl lg:text-5xl text-stone-900 font-medium leading-tight"></h2>
+              
+              <div class="flex items-center gap-4 pt-2 border-t border-line/40 font-mono text-xs text-stone-600">
+                <span id="reader-column-author" class="font-bold text-stone-900"></span>
+                <span>•</span>
+                <span>Peer-Reviewed Dispatch</span>
+              </div>
+            </div>
+
+            <!-- Key Takeaway Callout -->
+            <div class="max-w-3xl mx-auto bg-cell/5 border-l-4 border-cell p-5 rounded-r-xl space-y-1">
+              <span class="font-mono text-[10px] uppercase font-bold text-cell tracking-wider">EDITORIAL SUMMARY</span>
+              <p id="reader-column-summary" class="text-stone-800 text-sm md:text-base font-serif italic leading-relaxed"></p>
+            </div>
+
+            <!-- Main Body Text -->
+            <div id="reader-column-body" class="max-w-3xl mx-auto space-y-6 text-stone-800 text-base md:text-lg leading-relaxed font-sans border-b border-line pb-8">
+              <!-- Formatted Essay Paragraphs -->
+            </div>
+
+            <!-- Citation Footnote -->
+            <div class="max-w-3xl mx-auto bg-ink p-6 rounded-2xl border border-line space-y-2">
+              <div class="font-mono text-xs font-bold text-stone-900 uppercase tracking-wider flex items-center gap-2">
+                <span>📚</span> Primary Literature Citation
+              </div>
+              <p id="reader-column-citation" class="font-mono text-xs text-stone-700 leading-relaxed"></p>
+              <div id="reader-column-doi" class="font-mono text-[11px] text-cell font-bold pt-1"></div>
+            </div>
+
+            <!-- Bottom Back Button -->
+            <div class="max-w-3xl mx-auto pt-4 text-center">
+              <button onclick="closeColumnReader()" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-stone-900 text-white hover:bg-cell transition-all font-mono text-xs font-bold uppercase tracking-wider">
+                <span>← Return to All Weekly Columns</span>
+              </button>
+            </div>
+          </article>
+
+          <!-- FEED CONTAINER (Stacked Chronological Essays) -->
+          <div id="columns-feed-container" class="space-y-8">
+            <!-- Dynamically Populated Column Essay Cards -->
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SUBSCRIBE SECTION -->
+      <section id="subscribe-section" class="py-20 px-6 border-t border-line bg-panel relative overflow-hidden">
+        <div class="max-w-3xl mx-auto text-center space-y-8 relative z-10">
+          <div class="space-y-3">
+            <span class="font-mono text-xs tracking-[0.2em] text-cell uppercase font-semibold">WEEKLY ESSAY DISPATCH</span>
+            <h2 class="font-serif text-3xl md:text-4xl text-stone-900 font-normal">
+              Receive Long-Form Editorials Every Friday
+            </h2>
+            <p class="text-muted text-sm md:text-base leading-relaxed">
+              Subscribe to Ontosma to receive full-length academic essays, biophysical breakdowns, and chemical engineering analyses directly in your inbox.
+            </p>
+          </div>
+
+          <form id="columns-form" class="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-lg mx-auto">
+            <input type="email" id="columns-email" required placeholder="Enter your academic or professional email..." class="w-full px-4 py-3 rounded-xl bg-ink border border-line focus:border-cell focus:outline-none font-mono text-xs text-stone-900 placeholder-stone-400">
+            <button type="submit" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-cell text-white font-mono text-xs font-bold uppercase tracking-wider hover:bg-opacity-90 transition-all shrink-0">
+              Subscribe Free
+            </button>
+          </form>
+
+          <div id="columns-toast" class="hidden p-4 rounded-xl bg-cell/10 border border-cell/30 text-cell font-mono text-xs font-semibold">
+            ✓ Thank you! You are now subscribed to the Ontosma Weekly Editorials.
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-ink border-t border-line py-16 px-6 mt-auto">
+      <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12">
+        
+        <!-- Column 1: Brand Info -->
+        <div class="md:col-span-6 space-y-4">
+          <div class="flex items-center gap-2">
+            <span class="font-serif text-lg font-bold tracking-tight text-stone-900 uppercase">Ontosma</span>
+            <span class="w-2 h-2 bg-cell border border-stone-950"></span>
+          </div>
+          <p class="text-muted text-sm leading-relaxed max-w-sm font-sans">
+            An independent educational companion and newsletter bringing rigorous, plain-language clarity to stem cell developmental biology and molecular/cellular science.
+          </p>
+        </div>
+
+        <!-- Column 2: Explore Links -->
+        <div class="md:col-span-3 space-y-4">
+          <h4 class="font-mono text-xs tracking-wider text-cell uppercase font-semibold">EXPLORE</h4>
+          <ul class="space-y-2 text-sm font-mono text-muted">
+            <li><a href="./index.html" class="hover:text-cell transition-colors">Homepage</a></li>
+            <li><a href="./newsletter.html" class="hover:text-cell transition-colors">Daily Digest</a></li>
+            <li><a href="./columns.html" class="hover:text-cell transition-colors">Weekly Columns</a></li>
+            <li><a href="./concepts.html" class="hover:text-cell transition-colors">Concept Library</a></li>
+            <li><a href="./index.html#about" class="hover:text-cell transition-colors">About Us</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Elsewhere Links -->
+        <div class="md:col-span-3 space-y-4">
+          <h4 class="font-mono text-xs tracking-wider text-cell uppercase font-semibold">ELSEWHERE</h4>
+          <ul class="space-y-2 text-sm font-mono text-muted">
+            <li><a href="https://x.com" target="_blank" rel="noopener noreferrer" class="hover:text-cell transition-colors">X / Twitter</a></li>
+            <li><a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="hover:text-cell transition-colors">LinkedIn</a></li>
+            <li><a href="https://threads.net" target="_blank" rel="noopener noreferrer" class="hover:text-cell transition-colors">Threads</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="max-w-7xl mx-auto border-t border-line mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <span class="font-mono text-[10px] text-muted">
+          &copy; 2026 Ontosma. All rights reserved.
+        </span>
+        <span class="font-mono text-[10px] text-muted italic">
+          Deciphering the blueprints of growth and preservation.
+        </span>
+      </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC & MOCK DATA -->
+    <script>
+      // CENTRAL DATASET: LONG-FORM WEEKLY COLUMNS & EDITORIALS
+      const COLUMNS_DATA = [
+        {
+          id: "col-29-5",
+          code: "Weekly Column #29",
+          dateStr: "Fri, July 17, 2026",
+          title: "Structural Bottlenecks in Recombinant Translation: From mRNA Folding Kinetics to Industrial Bioreactor Yields",
+          topic: "Bioprocess Engineering",
+          topicIcon: "⚗️",
+          readTime: "4 MIN READ (~520 WORDS)",
+          author: "By Dr. Elena Vance & Swarnadeep Saha",
+          summary: "An investigation into ribosome footprint stalling during eukaryotic protein expression, examining how free energy barriers in mRNA hairpins trigger endonucleolytic cleavage and how codon thermodynamic re-engineering enhances monoclonal antibody yields.",
+          paragraphs: [
+            "While synthetic biology has revolutionized high-throughput vector design, recombinant protein expression in eukaryotic host systems frequently encounters severe physical bottlenecks during translational elongation. Ribosomes do not traverse messenger RNA templates at a constant velocity; rather, their movement is punctuated by mechanical stalling events induced by stable mRNA secondary structures, rare synonymous codon clusters, and charged nascent peptide interactions within the ribosomal exit tunnel.",
+            "Recent single-molecule optical tweezers experiments reveal that the ribosome acts as a mechanical helicase, generating unwinding forces up to 35 piconewtons at the A-site to melt double-stranded mRNA hairpins. When free energy barriers exceed -15 kcal/mol, ribosome pausing density spikes dramatically. These localized traffic jams lead to premature peptidyl-tRNA abortion, frame-shifting errors, and endonucleolytic cleavage of stalled mRNA transcripts by quality-control surveillance pathways.",
+            "By integrating nucleotide-resolution ribosome profiling (Ribo-seq) with thermodynamic RNA folding algorithms, bioprocess engineers can now map elongation velocity landscapes in real time. Synonymous codon optimization strategies—traditionally focused solely on species-specific tRNA abundance—are being redesigned to specifically eliminate hairpin structures near translation initiation sites while preserving necessary pause pauses required for proper co-translational protein domain folding.",
+            "In pilot biopharmaceutical bioreactors, applying this biophysical design framework boosted active monoclonal antibody titers by 3.4-fold without increasing unfolded protein stress or chaperonin exhaustion. This paradigm shift underscores the importance of structural mRNA mechanics over raw sequence codon adaptation index metrics."
+          ],
+          citation: "Vance, E., Saha, S., & Ingolia, N. T. (2026). Biophysical Foundations of Translational Elongation in Industrial Expression Systems. Nature Chemical Engineering, 4(7), 480-496.",
+          doi: "DOI: 10.1038/s41557-026-0480-x"
+        },
+        {
+          id: "col-29-4",
+          code: "Weekly Column #28",
+          dateStr: "Thu, July 16, 2026",
+          title: "Adult Neurogenesis & Hippocampal Plasticity: Molecular Signaling in Dentate Gyrus Niche Homeostasis",
+          summary: "An exploration of neural stem cell activation in the adult dentate gyrus, detailing Notch-BDNF signaling cross-talk, precursor recruitment, and synaptic integration mechanics in hippocampal memory circuits.",
+          topic: "Neuroscience",
+          topicIcon: "🧠",
+          readTime: "4 MIN READ (~510 WORDS)",
+          author: "By Neurogenesis Lab & Swarnadeep Saha",
+          paragraphs: [
+            "For decades, neurobiology adhered to the dogma that the mammalian central nervous system possesses a fixed neuron population incapable of post-embryonic neurogenesis. However, state-of-the-art radial glia lineage tracing and carbon-14 birth-dating have definitively demonstrated that active adult neurogenesis persists in two specific neurogenic niches: the subventricular zone (SVZ) of the lateral ventricles and the subgranular zone (SGZ) of the hippocampal dentate gyrus.",
+            "Within the dentate gyrus SGZ, type-1 radial glia-like stem cells (RGLs) reside in a deeply quiescent state maintained by high local Notch2 and BMP signaling. Tonic GABAergic inhibition from local interneurons acts as a rheostat, preventing premature stem cell pool exhaustion. Upon physiological stimulation—such as environmental enrichment, aerobic exercise, or targeted brain-derived neurotrophic factor (BDNF) elevation—RGLs break quiescence to generate type-2a transit-amplifying progenitor cells.",
+            "The transition from committed neuroblasts into functional granule cells involves a delicate, highly coordinated migration across the inner granule cell layer. Maturing young neurons express a transient hyperexcitable electrophysiological profile characterized by lower activation thresholds and enhanced long-term potentiation (LTP) capacity compared to mature adult granule cells. This temporary plasticity window allows new neurons to act as specialized pattern separators in spatial memory encoding.",
+            "Dysregulation of adult hippocampal neurogenesis is strongly linked to major depressive disorder, age-related cognitive decline, and neurodegenerative disorders. Deciphering the molecular pathways that govern neural stem cell renewal—specifically targeting GABA-A receptor alpha-5 subunits and microglial phagocytic clearance of apoptotic neuroblasts—opens novel therapeutic avenues for cognitive rejuvenation and targeted neurorestoration."
+          ],
+          citation: "Gage, F. H., Saha, S., & Kempermann, G. (2026). Adult Neurogenesis and Niche Signal Integration in Memory Networks. Nature Neuroscience, 29(7), 812-828.",
+          doi: "DOI: 10.1038/s41593-026-0812-x"
+        },
+        {
+          id: "col-29-3",
+          code: "Weekly Column #27",
+          dateStr: "Wed, July 15, 2026",
+          title: "Epigenetic Reprogramming and Positional Identity Retention in Amphibian Limb Blastemas",
+          summary: "How axolotl dermal cells erase DNA methylation age clocks while retaining persistent HOX histone methylation marks during complete limb regeneration.",
+          topic: "Epigenetics",
+          topicIcon: "🧬",
+          readTime: "4 MIN READ (~500 WORDS)",
+          author: "By Tanaka Regeneration Group & Dr. S. Horvath",
+          paragraphs: [
+            "When an axolotl (Ambystoma mexicanum) loses a limb, it does not form scar tissue; instead, it initiates a complex developmental cascade starting with the formation of a blastema—a mass of dedifferentiated multipotent progenitor cells. Recent epigenomic analyses have uncovered a remarkable biological phenomenon: during blastema formation, somatic dermal cells undergo a rapid rewinding of their DNA methylation age clocks, reducing Horvath CpG methylation metrics by up to 90% within seven days post-amputation.",
+            "Crucially, while these blastemal cells revert to a juvenile, highly proliferative state, they do not lose their positional memory. Epigenetic memory is faithfully preserved along HOX gene clusters via persistent histone methylation footprints (such as H3K4me3 marks at Hoxa13 in distal wrist tissue). This spatial footprint ensures that a wrist blastema regenerates only digits, while a shoulder blastema regenerates an entire limb.",
+            "TET dioxygenase enzymes drive active DNA demethylation across age-associated CpG dinucleotides, resetting the epigenetic clock while leaving structural spatial histone marks intact.",
+            "Unlocking these dual epigenetic mechanisms—active clock reversal coupled with stable positional identity preservation—provides a foundational framework for regenerative medicine and bioengineered human tissue replacement without malignant transformation risk."
+          ],
+          citation: "Tanaka, E. M., Horvath, S., & Gerber, T. (2026). Epigenomic Clock Resetting During Vertebrate Appendage Regeneration. Nature Reviews Genetics, 27(6), 340-358.",
+          doi: "DOI: 10.1038/s41576-026-0340-z"
+        },
+        {
+          id: "col-29-2",
+          code: "Weekly Column #26",
+          dateStr: "Tue, July 14, 2026",
+          title: "Pioneer Factor Wedge Dynamics: How Oct4 and Sox2 Unravel Silent Heterochromatin",
+          summary: "Structural mechanics of pioneer transcription factors peeling genomic DNA from histone octamers during cellular reprogramming.",
+          topic: "Cell Mechanics",
+          topicIcon: "🔬",
+          readTime: "4 MIN READ (~510 WORDS)",
+          author: "By Epigenetic Reprogramming Lab",
+          paragraphs: [
+            "Cellular reprogramming from somatic cell fates back into induced pluripotent stem cells (iPSCs) requires pioneer transcription factors capable of targeting dense, silent heterochromatin. Unlike conventional transcription factors that can only bind open nucleosome-free DNA, pioneer factors such as Oct4 and Sox2 possess specialized structural domains that recognize DNA motifs wrapped around histone octamers.",
+            "Cryo-EM reconstructions and single-molecule FRET measurements reveal that Oct4 and Sox2 act as a molecular wedge and lever system. Sox2 inserts its HMG box domain into the minor groove, bending DNA by 70 degrees within 45 milliseconds. This mechanical deformation creates a strain gap that allows Oct4 to insert its POU domain, sterically hindering PRC2 methyltransferase complexes and inducing local H3K27ac histone acetylation.",
+            "The eviction of polycomb repressive complexes (PRC2) at pluripotency loci opens previously inaccessible chromatin regions, enabling downstream transactivation machinery to establish stem cell pluripotency networks.",
+            "Engineered dCas9 synthetic pioneer levers mimicking this structural peeling mechanism now enable locus-specific chromatin unwrapping, advancing therapeutic somatic reprogramming without global genomic instability."
+          ],
+          citation: "Saha, S., Chen, L., & Kim, H. (2026). Biophysical Mechanism of Nucleosome Peeling by Pioneer Reprogramming Complexes. Cell Stem Cell, 38(4), 510-528.",
+          doi: "DOI: 10.1016/j.stem.2026.03.012"
+        }
+      ];
+
+      // GLOBAL STATE
+      let activeFilterTopic = "ALL";
+
+      // RENDER FUNCTIONS
+      function renderTopicFilters() {
+        const container = document.getElementById("column-topic-filters");
+        if (!container) return;
+
+        const topics = ["ALL", "Bioprocess Engineering", "Neuroscience", "Synthetic Biology", "Immunology", "Epigenetics", "Cell Mechanics"];
+        
+        container.innerHTML = topics.map(t => {
+          const isActive = activeFilterTopic === t;
+          return `
+            <button onclick="setTopicFilter('${t}')" class="topic-filter-btn ${isActive ? 'active' : 'bg-panel text-stone-700 border-line hover:border-cell'} px-3.5 py-1.5 rounded-full border font-mono text-xs font-semibold transition-all touch-manipulation">
+              ${t}
+            </button>
+          `;
+        }).join('');
+      }
+
+      function setTopicFilter(topic) {
+        activeFilterTopic = topic;
+        renderTopicFilters();
+        renderColumnsFeed();
+      }
+
+      function renderColumnsFeed() {
+        const feedContainer = document.getElementById("columns-feed-container");
+        const countLabel = document.getElementById("columns-count-label");
+        if (!feedContainer) return;
+
+        const filtered = COLUMNS_DATA.filter(col => activeFilterTopic === "ALL" || col.topic === activeFilterTopic);
+
+        if (countLabel) {
+          countLabel.innerText = `Showing ${filtered.length} Essay${filtered.length === 1 ? '' : 's'}`;
+        }
+
+        if (filtered.length === 0) {
+          feedContainer.innerHTML = `<div class="p-12 text-center text-muted font-mono text-xs">No columns found for topic "${activeFilterTopic}".</div>`;
+          return;
+        }
+
+        feedContainer.innerHTML = filtered.map(col => `
+          <div class="bg-panel border border-line p-6 md:p-8 rounded-3xl space-y-5 shadow-sm hover:border-cell/40 transition-all duration-300 group">
+            
+            <div class="flex items-center justify-between border-b border-line/30 pb-3 flex-wrap gap-2 font-mono text-xs">
+              <div class="flex items-center gap-2">
+                <span class="text-cell font-bold bg-cell/10 border border-cell/20 px-3 py-0.5 rounded-full uppercase tracking-wider text-[10px]">
+                  ${col.code}
+                </span>
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-stone-900 text-white font-mono text-[9px] font-bold uppercase tracking-wider">
+                  <span>${col.topicIcon}</span> ${col.topic}
+                </span>
+              </div>
+              <div class="flex items-center gap-3 text-stone-500 font-semibold">
+                <span>${col.dateStr}</span>
+                <span>•</span>
+                <span class="bg-ink px-2 py-0.5 border border-line/30 rounded text-[10px]">${col.readTime}</span>
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="font-serif text-2xl md:text-3xl text-stone-900 font-medium leading-snug group-hover:text-cell transition-colors cursor-pointer" onclick="openColumnReader('${col.id}')">
+                ${col.title}
+              </h3>
+              <p class="font-mono text-xs text-cell font-bold">${col.author}</p>
+              <p class="text-stone-700 text-sm md:text-base leading-relaxed font-sans">
+                ${col.summary}
+              </p>
+            </div>
+
+            <div class="pt-2 border-t border-line/30 flex items-center justify-between flex-wrap gap-4">
+              <div class="font-mono text-[11px] text-muted truncate max-w-md">
+                <em>${col.citation}</em>
+              </div>
+              <button onclick="openColumnReader('${col.id}')" class="px-5 py-2.5 rounded-xl bg-ink hover:bg-cell/10 border border-line hover:border-cell/30 text-cell font-mono text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 shrink-0">
+                <span>Read Full Essay</span> ➔
+              </button>
+            </div>
+
+          </div>
+        `).join('');
+      }
+
+      function openColumnReader(columnId) {
+        const col = COLUMNS_DATA.find(c => c.id === columnId);
+        if (!col) return;
+
+        document.getElementById("reader-column-code").innerText = col.code;
+        document.getElementById("reader-column-date").innerText = col.dateStr;
+        document.getElementById("reader-column-topic").innerHTML = `<span>${col.topicIcon}</span> ${col.topic}`;
+        document.getElementById("reader-column-readtime").innerText = col.readTime;
+        document.getElementById("reader-column-title").innerText = col.title;
+        document.getElementById("reader-column-author").innerText = col.author;
+        document.getElementById("reader-column-summary").innerText = col.summary;
+        document.getElementById("reader-column-citation").innerText = col.citation;
+        document.getElementById("reader-column-doi").innerText = col.doi;
+
+        const bodyContainer = document.getElementById("reader-column-body");
+        bodyContainer.innerHTML = col.paragraphs.map((p, idx) => `
+          <p class="${idx === 0 ? 'first-letter:float-left first-letter:text-5xl first-letter:font-serif first-letter:pr-3 first-letter:font-bold first-letter:text-cell' : ''} leading-relaxed">
+            ${p}
+          </p>
+        `).join('');
+
+        document.getElementById("columns-feed-container").classList.add("hidden");
+        const reader = document.getElementById("column-reader");
+        reader.classList.remove("hidden");
+        reader.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      function closeColumnReader() {
+        document.getElementById("column-reader").classList.add("hidden");
+        document.getElementById("columns-feed-container").classList.remove("hidden");
+      }
+
+      window.setTopicFilter = setTopicFilter;
+      window.openColumnReader = openColumnReader;
+      window.closeColumnReader = closeColumnReader;
+
+      // DOM Content Loaded
+      window.addEventListener("DOMContentLoaded", () => {
+        renderTopicFilters();
+        renderColumnsFeed();
+
+        // Mobile Nav Handlers
+        const mobileToggle = document.getElementById('mobile-menu-toggle');
+        const mobileClose = document.getElementById('mobile-menu-close');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        if (mobileToggle && mobileClose && mobileMenu) {
+          mobileToggle.addEventListener('click', () => {
+            mobileMenu.classList.remove('hidden');
+            mobileMenu.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+          });
+
+          const closeMobile = () => {
+            mobileMenu.classList.add('hidden');
+            mobileMenu.classList.remove('flex');
+            document.body.style.overflow = '';
+          };
+
+          mobileClose.addEventListener('click', closeMobile);
+
+          const mobileLinks = mobileMenu.querySelectorAll('a');
+          mobileLinks.forEach(link => {
+            link.addEventListener('click', closeMobile);
+          });
+        }
+
+        // Subscription Form
+        const form = document.getElementById('columns-form');
+        const toast = document.getElementById('columns-toast');
+        if (form && toast) {
+          form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const emailInput = document.getElementById('columns-email');
+            if (emailInput && emailInput.value) {
+              toast.classList.remove('hidden');
+              emailInput.value = '';
+              setTimeout(() => toast.classList.add('hidden'), 4000);
+            }
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

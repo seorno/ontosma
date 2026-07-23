@@ -1,0 +1,721 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blastema & Regeneration — Ontosma</title>
+    <!-- Tailwind Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              ink: 'var(--ink)',
+              panel: 'var(--panel)',
+              'panel-2': 'var(--panel-2)',
+              cell: 'var(--cell)',
+              'cell-soft': 'var(--cell-soft)',
+              fate: 'var(--fate)',
+              text: 'var(--text)',
+              muted: 'var(--muted)',
+              line: 'var(--line)',
+            },
+            fontFamily: {
+              sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+              serif: ['var(--font-serif)', 'Georgia', 'serif'],
+              mono: ['var(--font-mono)', 'SFMono-Regular', 'monospace'],
+            }
+          }
+        }
+      }
+    </script>
+    <!-- Shared Brand Stylesheet -->
+    <link rel="stylesheet" href="../assets/style.css">
+    <!-- GSAP & ScrollTrigger CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  </head>
+  <body class="bg-ink text-text selection:bg-cell/30 selection:text-cell min-h-screen flex flex-col">
+    
+    <!-- Header Navigation -->
+    <header class="glass-header fixed top-0 left-0 w-full z-50">
+      <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <a id="nav-logo" href="../index.html" class="flex items-center gap-2 group">
+          <span class="font-serif text-xl md:text-2xl font-bold tracking-tight text-text group-hover:text-cell transition-colors uppercase">
+            Ontosma
+          </span>
+          <span class="w-2 h-2 bg-cell border border-stone-950"></span>
+        </a>
+        
+        <nav class="hidden md:flex items-center gap-8 font-mono text-sm tracking-wider">
+          <a id="nav-link-newsletter" href="../newsletter.html" class="text-muted hover:text-cell transition-colors py-2">DAILY DIGEST</a>
+          <a id="nav-link-columns" href="../columns.html" class="text-muted hover:text-cell transition-colors py-2">COLUMNS</a>
+          <a id="nav-link-concepts" href="../concepts.html" class="text-cell transition-colors py-2 border-b-2 border-cell">CONCEPTS</a>
+          <a id="nav-link-about" href="../index.html#about" class="text-muted hover:text-cell transition-colors py-2">ABOUT</a>
+          <a id="nav-cta" href="../index.html#newsletter" class="btn-pill btn-pill-secondary py-2 px-5 text-xs">SUBSCRIBE</a>
+        </nav>
+
+        <button id="mobile-menu-toggle" class="md:hidden text-muted hover:text-cell p-2" aria-label="Toggle Menu">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Mobile Navigation Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 bg-ink z-40 flex-col justify-center items-center gap-8 font-mono text-lg tracking-widest hidden overflow-y-auto">
+      <button id="mobile-menu-close" class="absolute top-6 right-6 text-muted hover:text-cell p-2" aria-label="Close Menu">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      <a id="mobile-link-newsletter" href="../newsletter.html" class="text-muted hover:text-cell transition-colors">DAILY DIGEST</a>
+      <a id="mobile-link-columns" href="../columns.html" class="text-muted hover:text-cell transition-colors">COLUMNS</a>
+      <a id="mobile-link-concepts" href="../concepts.html" class="text-cell transition-colors font-bold">CONCEPTS</a>
+      <a id="mobile-link-about" href="../index.html#about" class="text-muted hover:text-cell transition-colors">ABOUT</a>
+    </div>
+
+    <!-- MAIN SCROLLYTELLING VIEW -->
+    <main class="flex-grow">
+      
+      <!-- 1. FULL VIEWPORT HERO -->
+      <section id="concept-hero" class="relative h-screen flex flex-col justify-center items-center text-center px-6 overflow-hidden bg-ink">
+        <div class="absolute inset-0 svg-bg-grid opacity-50 pointer-events-none"></div>
+        <div class="absolute w-96 h-96 rounded-full glowing-orb opacity-10 pointer-events-none"></div>
+
+        <div class="max-w-3xl mx-auto space-y-6 relative z-10 mt-16">
+          <span class="font-mono text-xs tracking-[0.25em] text-cell bg-cell-soft border border-line px-4 py-1.5 uppercase">
+            CONCEPT 04 · REGENERATIVE BIOLOGY
+          </span>
+          <h1 class="text-5xl md:text-7xl text-text font-normal leading-tight">
+            Blastema & Regeneration
+          </h1>
+          <p class="text-xl md:text-2xl font-serif italic text-fate">
+            "Undoing the lock of cell fate."
+          </p>
+          <p class="text-muted text-base md:text-lg max-w-xl mx-auto leading-relaxed font-sans">
+            How do some organisms revert committed tissues back into plastic cells to rebuild complete lost body parts? Scroll to witness a salamander's cells form the regenerative blastema.
+          </p>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 flex flex-col items-center gap-2 pointer-events-none">
+          <span class="font-mono text-[9px] tracking-widest text-muted">SCROLL TO REGENERATE</span>
+          <div class="w-1 h-8 rounded-full bg-line relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1/2 bg-cell rounded-full animate-bounce"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. SCROLL-PINNED SECTION (450vh height for clean progressive scrolling) -->
+      <section id="scrolly-trigger" class="relative h-[450vh] bg-[#ffffff]">
+        <div class="scrolly-sticky">
+          <!-- Background Grid lines -->
+          <div class="absolute inset-0 svg-bg-grid opacity-40"></div>
+          
+          <div class="w-full max-w-6xl mx-auto px-6 relative flex flex-col lg:flex-row items-center justify-between gap-8 h-full py-20">
+            
+            <!-- Left Side: Interactive SVG Canvas -->
+            <div class="w-full lg:w-[55%] h-[45vh] lg:h-[65vh] flex items-center justify-center relative bg-panel border border-line rounded-2xl p-4 shadow-sm">
+              <svg id="regeneration-svg" class="w-full h-full" viewBox="0 0 600 400" fill="none" preserveAspectRatio="xMidYMid meet">
+                
+                <!-- ==================== SALAMANDER BODY & HEAD (STATIC BACKGROUND) ==================== -->
+                <!-- Cute Axolotl/Salamander silhouette -->
+                <!-- Body background curve -->
+                <path d="M 20,260 C 20,200 60,120 140,120 C 180,120 190,140 220,150 L 220,250 C 190,260 180,280 140,280 C 60,280 20,280 20,260 Z" fill="rgba(234, 88, 12, 0.03)" stroke="var(--line)" stroke-width="1.5" />
+                
+                <!-- Cute Lateral Gills (Feathered, coral orange) -->
+                <!-- Gill 1 (Top Left) -->
+                <path d="M 120,120 C 95,100 80,80 70,60" stroke="var(--fate)" stroke-width="3" stroke-linecap="round" fill="none" />
+                <path d="M 110,110 C 90,95 80,75 75,55" stroke="var(--fate)" stroke-width="1.5" stroke-linecap="round" fill="none" />
+                <!-- Gill 2 (Middle Left) -->
+                <path d="M 115,135 C 85,125 60,115 45,105" stroke="var(--fate)" stroke-width="3" stroke-linecap="round" fill="none" />
+                <path d="M 105,130 C 75,120 55,110 40,100" stroke="var(--fate)" stroke-width="1.5" stroke-linecap="round" fill="none" />
+                <!-- Gill 3 (Bottom Left) -->
+                <path d="M 120,150 C 90,155 65,160 50,165" stroke="var(--fate)" stroke-width="3" stroke-linecap="round" fill="none" />
+                
+                <!-- Cute Axolotl Head Details (Eye and Smile) -->
+                <circle cx="150" cy="165" r="4.5" fill="var(--text)" />
+                <path d="M 135,185 Q 145,195 155,185" stroke="var(--text)" stroke-width="1.5" stroke-linecap="round" fill="none" />
+
+                <!-- ==================== SALAMANDER LIMB (INTERACTIVE PART) ==================== -->
+                <!-- Static Limb Base / Shoulder (Up to Amputation line) -->
+                <!-- Upper shoulder outline -->
+                <path d="M 180,180 C 195,180 205,180 215,180" stroke="var(--line)" stroke-width="2" fill="none" />
+                <!-- Lower shoulder outline -->
+                <path d="M 180,225 C 195,225 205,225 215,225" stroke="var(--line)" stroke-width="2" fill="none" />
+                <!-- Internal Bone base stump -->
+                <line x1="175" y1="202" x2="215" y2="202" stroke="var(--muted)" stroke-opacity="0.3" stroke-width="6" stroke-linecap="round" />
+
+                <!-- Amputation Reference line -->
+                <line x1="215" y1="170" x2="215" y2="235" stroke="var(--cell)" stroke-opacity="0.5" stroke-width="1.5" stroke-dasharray="3 3" />
+                <text x="215" y="160" text-anchor="middle" fill="var(--cell)" font-family="Courier New" font-size="7" font-weight="bold">AMPUTATION PLANE</text>
+
+                <!-- 1. The Original Healthy Distal Limb (Fades out / shrinks upon amputation) -->
+                <g id="healthy-distal-limb">
+                  <!-- Upper/lower limb sheath -->
+                  <path d="M 215,180 L 280,180 C 280,180 295,180 305,195 L 320,195 L 305,202 L 320,207 L 305,212 L 320,217 L 300,225 L 215,225 Z" fill="rgba(234, 88, 12, 0.05)" stroke="var(--line)" stroke-width="2" />
+                  <!-- Distal Bone (Humerus extension) -->
+                  <line x1="215" y1="202" x2="275" y2="202" stroke="var(--muted)" stroke-opacity="0.3" stroke-width="6" stroke-linecap="round" />
+                  <line x1="275" y1="202" x2="295" y2="202" stroke="var(--muted)" stroke-opacity="0.2" stroke-width="4" stroke-linecap="round" />
+                  <!-- Cute fingers -->
+                  <circle cx="320" cy="195" r="2.5" fill="var(--muted)" opacity="0.4" />
+                  <circle cx="322" cy="207" r="2.5" fill="var(--muted)" opacity="0.4" />
+                  <circle cx="320" cy="217" r="2.5" fill="var(--muted)" opacity="0.4" />
+                </g>
+
+                <!-- 2. Apical Ectodermal Cap (Wound protective barrier, appears at Stage 2) -->
+                <path id="wound-cap" d="M 215,180 C 224,180 230,190 230,202 C 230,215 224,225 215,225" stroke="var(--fate)" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="3 2" fill="none" opacity="0" />
+
+                <!-- 3. Dedifferentiating migrating cell (Path from deep bone tissue to wound site) -->
+                <path id="dediff-cell-path" d="M 185,202 C 195,190 205,185 225,202" class="svg-motion-path" stroke-dasharray="2 2" />
+                <circle id="reverting-cell" cx="185" cy="202" r="7" fill="var(--fate)" opacity="0" />
+                <circle id="reverting-cell-inner" cx="185" cy="202" r="2.5" fill="white" opacity="0" />
+
+                <!-- 4. Blastema Cells Pool (Expanding cluster, Stage 3) -->
+                <g id="blastema-pool" opacity="0">
+                  <circle cx="228" cy="190" r="4.5" fill="var(--cell)" class="svg-cell-marker" />
+                  <circle cx="225" cy="202" r="5" fill="var(--cell)" class="svg-cell-marker" />
+                  <circle cx="228" cy="214" r="4.5" fill="var(--cell)" class="svg-cell-marker" />
+                  <circle cx="236" cy="196" r="4" fill="var(--cell)" class="svg-cell-marker" />
+                  <circle cx="236" cy="208" r="4" fill="var(--cell)" class="svg-cell-marker" />
+                  <circle cx="244" cy="202" r="5" fill="var(--cell)" class="svg-cell-marker animate-pulse" />
+                  <circle cx="232" cy="202" r="16" fill="var(--cell)" fill-opacity="0.15" id="blastema-glow" />
+                </g>
+
+                <!-- 5. Regenerating Limb outline (Stage 4 - folds out with bones and digits) -->
+                <g id="regenerating-limb" opacity="0">
+                  <!-- Outer regrowing sheath -->
+                  <path id="regen-sheath" d="M 215,180 L 280,180 C 280,180 295,180 305,195 L 320,195 L 305,202 L 320,207 L 305,212 L 320,217 L 300,225 L 215,225 Z" fill="rgba(234, 88, 12, 0.08)" stroke="var(--cell)" stroke-width="2.5" stroke-linecap="round" />
+                  <!-- Regrowing Bone structures -->
+                  <line id="regen-bone-1" x1="215" y1="202" x2="275" y2="202" stroke="var(--cell)" stroke-opacity="0.5" stroke-width="5" stroke-linecap="round" />
+                  <line id="regen-bone-2" x1="275" y1="202" x2="295" y2="202" stroke="var(--cell)" stroke-opacity="0.3" stroke-width="3.5" stroke-linecap="round" />
+                  <!-- Fingers nodes -->
+                  <circle cx="320" cy="195" r="3" fill="var(--cell)" />
+                  <circle cx="322" cy="207" r="3" fill="var(--cell)" />
+                  <circle cx="320" cy="217" r="3" fill="var(--cell)" />
+                </g>
+
+                <!-- Display Text/Status -->
+                <text x="300" y="325" text-anchor="middle" fill="var(--muted)" font-family="Courier New" font-size="9" font-weight="bold" id="status-tag">STATUS: AMPUTATION PHASE</text>
+              </svg>
+
+              <!-- Interactive Playback Control Panel -->
+              <div class="border-t border-line/20 pt-3 px-4 pb-2 select-none bg-stone-50/50">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <!-- Control Buttons -->
+                  <div class="flex items-center gap-1.5 shrink-0">
+                    <button id="btn-play-pause" class="px-2.5 py-1 bg-cell text-white hover:bg-fate transition-colors font-mono text-[10px] uppercase font-bold border border-line flex items-center gap-1 shadow-[2px_2px_0px_var(--line)] active:translate-y-[1px] active:shadow-[1px_1px_0px_var(--line)] cursor-pointer" title="Autoplay Visualization">
+                      <svg id="play-icon" class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                      <svg id="pause-icon" class="w-2.5 h-2.5 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                      <span id="play-text">PLAY</span>
+                    </button>
+                    <button id="btn-step-prev" class="p-1 text-text hover:bg-cell-soft border border-line bg-white transition-all shadow-[1.5px_1.5px_0px_var(--line)] active:translate-y-[0.5px] cursor-pointer" title="Step Backward">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                    </button>
+                    <button id="btn-step-next" class="p-1 text-text hover:bg-cell-soft border border-line bg-white transition-all shadow-[1.5px_1.5px_0px_var(--line)] active:translate-y-[0.5px] cursor-pointer" title="Step Forward">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                    </button>
+                    <button id="btn-speed" class="px-2 py-1 bg-[#f5ebd6] hover:bg-[#ecdccb] text-text border border-line font-mono text-[9px] font-bold shadow-[1.5px_1.5px_0px_var(--line)] cursor-pointer" title="Toggle Speed">
+                      SPEED: 1X
+                    </button>
+                  </div>
+
+                  <!-- Live Progress Badge & Active Action Badge -->
+                  <div class="flex items-center gap-2 font-mono text-[9px] text-stone-600">
+                    <span class="bg-[#ecdccb]/50 px-1.5 py-0.5 border border-dashed border-line uppercase font-semibold text-[8px]" id="badge-playback-mode">MODE: SCROLL-CONTROL</span>
+                    <span class="font-bold text-cell" id="badge-playback-percent">0.0%</span>
+                  </div>
+                </div>
+
+                <!-- Continuous Custom Timeline Slider -->
+                <div class="flex items-center gap-2 mt-2">
+                  <span class="font-mono text-[9px] text-muted select-none w-6 text-right">0%</span>
+                  <input type="range" id="timeline-slider" min="0" max="1" step="0.002" value="0" class="flex-grow h-1.5 bg-[#ecdccb] border border-line appearance-none cursor-pointer focus:outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-cell [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-line [&::-webkit-slider-thumb]:shadow-[1px_1px_0px_var(--line)]" />
+                  <span class="font-mono text-[9px] text-muted select-none w-8">100%</span>
+                </div>
+              </div>
+              
+              <!-- Coordinates -->
+              <div class="absolute bottom-4 left-4 font-mono text-[9px] text-muted bg-white/80 px-2 py-1 border border-line rounded">
+                ORGANISM: AMBYSTOMA MEXICANUM (AXOLOTL)
+              </div>
+            </div>
+
+            <!-- Right Side: Progressive Scrolly Explanations -->
+            <div class="w-full lg:w-[42%] flex flex-col justify-center h-[40vh] lg:h-[65vh] relative">
+              
+              <!-- Caption 1 -->
+              <div id="caption-1" class="caption-fade-box absolute w-full max-w-md">
+                <span class="font-mono text-[10px] text-fate uppercase tracking-wider block mb-1.5 font-medium">Stage I · Amputation & Hemostasis</span>
+                <h4 class="text-xl text-stone-900 font-medium mb-1.5">Apical Ectodermal Cap</h4>
+                <p class="text-muted text-xs leading-relaxed">
+                  Upon limb loss, the axolotl avoids scarring. Specialized epidermal cells migrate rapidly across the amputation plane.
+                  <br><br>
+                  Within 12 hours, they form a thick, multi-layered shield over the raw nerve endings called the **Apical Ectodermal Cap (AEC)**, sealing the wound.
+                </p>
+                <div class="mt-3 flex flex-wrap gap-1">
+                  <span class="font-mono text-[8px] bg-fate/5 border border-fate/20 text-fate px-1.5 py-0.5 rounded">EPIDERMAL SHEATH</span>
+                  <span class="font-mono text-[8px] bg-fate/5 border border-fate/20 text-fate px-1.5 py-0.5 rounded">NO COLLAGEN SCAR</span>
+                  <span class="font-mono text-[8px] bg-stone-100 text-stone-500 px-1.5 py-0.5 rounded">WOUND CLOSED</span>
+                </div>
+              </div>
+
+              <!-- Caption 2 -->
+              <div id="caption-2" class="caption-fade-box absolute w-full max-w-md">
+                <span class="font-mono text-[10px] text-fate uppercase tracking-wider block mb-1.5 font-medium">Stage II · Dedifferentiation</span>
+                <h4 class="text-xl text-stone-900 font-medium mb-1.5">Unraveling Identity</h4>
+                <p class="text-muted text-xs leading-relaxed">
+                  Directly beneath the protective cap, signaling from the severed nerves triggers a cellular retreat. Specialized cartilage, bone, and muscle cells down-regulate somatic genes and deconstruct their specialized structures.
+                  <br><br>
+                  They revert into plastic, actively dividing **progenitor cells**, wiping away their permanent epigenetic locks.
+                </p>
+                <div class="mt-3 flex flex-wrap gap-1">
+                  <span class="font-mono text-[8px] bg-fate/5 border border-fate/20 text-fate px-1.5 py-0.5 rounded">CELL REVERSION</span>
+                  <span class="font-mono text-[8px] bg-fate/5 border border-fate/20 text-fate px-1.5 py-0.5 rounded">NERVE ENVELOPE</span>
+                  <span class="font-mono text-[8px] bg-stone-100 text-stone-500 px-1.5 py-0.5 rounded">PLASTICITY REGAINED</span>
+                </div>
+              </div>
+
+              <!-- Caption 3 -->
+              <div id="caption-3" class="caption-fade-box absolute w-full max-w-md">
+                <span class="font-mono text-[10px] text-cell uppercase tracking-wider block mb-1.5 font-medium">Stage III · Blastema Accumulation</span>
+                <h4 class="text-xl text-stone-900 font-medium mb-1.5">The Progenitor Pool</h4>
+                <p class="text-muted text-xs leading-relaxed">
+                  These plastic, reverted cells gather directly beneath the ectodermal cap, forming a highly proliferative cone called the **Blastema**.
+                  <br><br>
+                  Nerve-derived growth factors (such as nAG) fuel aggressive mitotic division, creating a localized reservoir of stem-like cells ready to build.
+                </p>
+                <div class="mt-3 flex flex-wrap gap-1">
+                  <span class="font-mono text-[8px] bg-cell/5 border border-cell/20 text-cell px-1.5 py-0.5 rounded">BLASTEMA CONE</span>
+                  <span class="font-mono text-[8px] bg-cell/5 border border-cell/20 text-cell px-1.5 py-0.5 rounded">MITOTIC DIVISION</span>
+                  <span class="font-mono text-[8px] bg-cell/5 border border-cell/20 text-cell px-1.5 py-0.5 rounded">GROWTH FACTORS (nAG)</span>
+                </div>
+              </div>
+
+              <!-- Caption 4 -->
+              <div id="caption-4" class="caption-fade-box absolute w-full max-w-md">
+                <span class="font-mono text-[10px] text-cell uppercase tracking-wider block mb-1.5 font-medium">Stage IV · Morphogenesis</span>
+                <h4 class="text-xl text-stone-900 font-medium mb-1.5">Lineage Redeployment</h4>
+                <p class="text-muted text-xs leading-relaxed">
+                  As the blastema extends, cells interpret spatial chemical axes (such as retinoic acid gradients). 
+                  <br><br>
+                  They re-differentiate, laying down new cartilage templates, recruiting blood vessels, and stitching muscle fibers together. Step-by-step, they reconstruct a flawless, fully functional replicate of the lost arm.
+                </p>
+                <div class="mt-3 flex flex-wrap gap-1">
+                  <span class="font-mono text-[8px] bg-cell/5 border border-cell/20 text-cell px-1.5 py-0.5 rounded">GRADIENTS READ</span>
+                  <span class="font-mono text-[8px] bg-cell/5 border border-cell/20 text-cell px-1.5 py-0.5 rounded">CARTILAGE CONDENSATION</span>
+                  <span class="font-mono text-[8px] bg-stone-100 text-stone-500 px-1.5 py-0.5 rounded">LIMB COMPLETED</span>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. FOLLOW-UP SECTION -->
+      <section id="mechanism-explanation" class="py-24 px-6 border-t border-line bg-panel relative">
+        <div class="max-w-4xl mx-auto space-y-8">
+          <div class="space-y-3">
+            <span class="font-mono text-xs text-cell uppercase tracking-wider block font-semibold">THE AXOLOTL THESIS</span>
+            <h2 class="text-3xl md:text-5xl text-stone-900 font-normal">Super-Regenerators of the Biosphere</h2>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-muted text-base leading-relaxed">
+            <p>
+              The axolotl salamander (*Ambystoma mexicanum*) stands as a legendary model system for regenerative medicine. Unlike mammals, which deposit dense collagen to form permanent scar tissue, the axolotl avoids scarring entirely. It activates ancient cellular programs that allow fully committed mature cells to re-evaluate their identity.
+            </p>
+            <p>
+              By examining how the blastema maintains cell division and establishes spatial axes, researchers aim to replicate these cascades. The ultimate goal is to unlock blastema-like progenitor pathways in human tissues, shifting the paradigm of medicine from scarred repair to true biological regrowth.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. CLOSING CITATIONS & CTA -->
+      <section id="citations-and-cta" class="py-24 px-6 border-t border-line bg-white relative">
+        <div class="max-w-4xl mx-auto text-center space-y-12">
+          
+          <!-- Citation Block -->
+          <div class="border-t border-b border-line py-8 max-w-2xl mx-auto space-y-4">
+            <span class="font-mono text-[10px] text-muted tracking-widest block uppercase font-semibold">SELECTED CITATIONS</span>
+            <ul class="space-y-2 font-mono text-xs text-muted leading-relaxed">
+              <li>
+                <span class="text-stone-900 font-medium">Spallanzani, L.</span>, "An Essay on Animal Reproductions," London, 1768. (First formal description of salamander limb regeneration)
+              </li>
+              <li>
+                <span class="text-stone-900 font-medium">Tanaka, E.M., et al.</span>, "Regeneration of Axolotl Limbs," <span class="italic">Science</span>, 2016. (Unveiling the molecular lineage tracing of blastemal stem cells)
+              </li>
+              <li>
+                <span class="text-stone-900 font-medium">Nacu, E., & Tanaka, E. M.</span>, "Limb Regeneration: A Developmental Biology Perspective," <span class="italic">Annual Review of Cell and Developmental Biology</span>, 2011. (Delineating wound cap signals and progenitor recruitment)
+              </li>
+            </ul>
+          </div>
+
+          <div class="space-y-6">
+            <h3 class="text-2xl text-stone-900 font-normal font-serif italic">What happens when microbes replicate this plasticity?</h3>
+            <p class="text-muted text-sm max-w-md mx-auto">
+              Cross the disciplinary boundaries. Discover how simple microbes undergo metabolic transformations under dark, anaerobic conditions.
+            </p>
+            <div class="pt-4 flex justify-center gap-4">
+              <a href="./fermentation.html" class="btn-pill btn-pill-primary">
+                Explore Fermentation
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-line py-16 px-6">
+      <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12">
+        <div class="md:col-span-6 space-y-4">
+          <div class="flex items-center gap-2">
+            <span class="font-serif text-lg font-semibold tracking-tight text-stone-900">Ontosma</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-cell shadow-[0_0_8px_#ea580c]"></span>
+          </div>
+          <p class="text-muted text-sm leading-relaxed max-w-sm">
+            An independent educational companion and newsletter bringing rigorous, plain-language clarity to stem cell developmental biology and molecular food-culture science.
+          </p>
+        </div>
+
+        <div class="md:col-span-3 space-y-4">
+          <h4 class="font-mono text-xs tracking-wider text-cell uppercase font-semibold">EXPLORE</h4>
+          <ul class="space-y-2 text-sm font-mono text-muted">
+            <li><a href="../index.html" class="hover:text-cell transition-colors">Homepage</a></li>
+            <li><a href="../newsletter.html" class="hover:text-cell transition-colors">Daily Digest</a></li>
+            <li><a href="../columns.html" class="hover:text-cell transition-colors">Weekly Columns</a></li>
+            <li><a href="../concepts.html" class="hover:text-cell transition-colors">Concept Library</a></li>
+            <li><a href="../index.html#about" class="hover:text-cell transition-colors">About Us</a></li>
+          </ul>
+        </div>
+
+        <div class="md:col-span-3 space-y-4">
+          <h4 class="font-mono text-xs tracking-wider text-cell uppercase font-semibold">ELSEWHERE</h4>
+          <ul class="space-y-2 text-sm font-mono text-muted">
+            <li><a href="https://x.com" target="_blank" rel="noopener noreferrer" class="hover:text-cell transition-colors">X / Twitter</a></li>
+            <li><a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="hover:text-cell transition-colors">LinkedIn</a></li>
+            <li><a href="https://threads.net" target="_blank" rel="noopener noreferrer" class="hover:text-cell transition-colors">Threads</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="max-w-7xl mx-auto border-t border-line mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <span class="font-mono text-[10px] text-muted">
+          &copy; 2026 Ontosma. All rights reserved.
+        </span>
+        <span class="font-mono text-[10px] text-muted italic">
+          Deciphering the blueprints of growth and preservation.
+        </span>
+      </div>
+    </footer>
+
+    <!-- GSAP / ScrollTrigger Engine Implementation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script>
+      // Register GSAP plugins
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Mobile Nav Toggle
+      const mobileToggle = document.getElementById('mobile-menu-toggle');
+      const mobileClose = document.getElementById('mobile-menu-close');
+      const mobileMenu = document.getElementById('mobile-menu');
+
+      mobileToggle.addEventListener('click', () => {
+        mobileMenu.classList.remove('hidden');
+        mobileMenu.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+      });
+
+      const closeMobile = () => {
+        mobileMenu.classList.add('hidden');
+        mobileMenu.classList.remove('flex');
+        document.body.style.overflow = '';
+      };
+
+      mobileClose.addEventListener('click', closeMobile);
+
+      // Helper for windowed opacity
+      function getWindowedOpacity(progress, start, peakStart, peakEnd, end) {
+        if (progress < start || progress > end) return 0;
+        if (progress >= peakStart && progress <= peakEnd) return 1;
+        if (progress < peakStart) {
+          return (progress - start) / (peakStart - start);
+        } else {
+          return (end - progress) / (end - peakEnd);
+        }
+      }
+
+      // Check prefers-reduced-motion
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (!prefersReducedMotion) {
+        // Scrollytelling Animation
+        const cellPath = document.getElementById('dediff-cell-path');
+        const revCell = document.getElementById('reverting-cell');
+        const revCellInner = document.getElementById('reverting-cell-inner');
+        const healthyLimb = document.getElementById('healthy-distal-limb');
+        const woundCap = document.getElementById('wound-cap');
+        const blastemaPool = document.getElementById('blastema-pool');
+        const blastemaGlow = document.getElementById('blastema-glow');
+        const regeneratingLimb = document.getElementById('regenerating-limb');
+        const statusTag = document.getElementById('status-tag');
+        
+        const pathLength = cellPath.getTotalLength();
+
+        // Caption elements
+        const captions = [
+          { element: document.getElementById('caption-1'), range: [0.0, 0.05, 0.18, 0.25] },
+          { element: document.getElementById('caption-2'), range: [0.25, 0.30, 0.44, 0.50] },
+          { element: document.getElementById('caption-3'), range: [0.50, 0.55, 0.73, 0.78] },
+          { element: document.getElementById('caption-4'), range: [0.78, 0.83, 0.96, 1.0] },
+        ];
+
+        function renderAnimationProgress(progress) {
+          progress = Math.max(0, Math.min(1, progress));
+
+          // Sync timeline controls
+          const timelineSlider = document.getElementById('timeline-slider');
+          const badgePercent = document.getElementById('badge-playback-percent');
+          if (timelineSlider) timelineSlider.value = progress;
+          if (badgePercent) badgePercent.textContent = (progress * 100).toFixed(1) + "%";
+
+          // --- ANIMATION SEQUENCE ---
+
+          // 1. AMPUTATION (0% to 25%)
+          if (progress <= 0.25) {
+            const hLimbProg = progress / 0.25;
+            healthyLimb.style.opacity = 1 - hLimbProg;
+            healthyLimb.style.transform = `translateX(${hLimbProg * 25}px) rotate(${hLimbProg * 5}deg)`;
+            healthyLimb.style.transformOrigin = "215px 202px";
+            woundCap.style.opacity = hLimbProg;
+            statusTag.textContent = "STATUS: AMPUTATION & CAP FORMATION";
+            statusTag.setAttribute('fill', 'var(--fate)');
+          } else {
+            healthyLimb.style.opacity = 0;
+            woundCap.style.opacity = 1;
+          }
+
+          // 2. DEDIFFERENTIATION & REVERTING CELL (25% to 50%)
+          if (progress > 0.25 && progress <= 0.5) {
+            const dediffProg = (progress - 0.25) / 0.25;
+            revCell.style.opacity = 1;
+            revCellInner.style.opacity = 1;
+            
+            const point = cellPath.getPointAtLength(dediffProg * pathLength);
+            revCell.setAttribute('cx', point.x);
+            revCell.setAttribute('cy', point.y);
+            revCellInner.setAttribute('cx', point.x);
+            revCellInner.setAttribute('cy', point.y);
+            
+            statusTag.textContent = "STATUS: DEDIFFERENTIATION CASCADE";
+            statusTag.setAttribute('fill', 'var(--fate)');
+          } else {
+            revCell.style.opacity = 0;
+            revCellInner.style.opacity = 0;
+          }
+
+          // 3. BLASTEMA POOL ACCUMULATION (50% to 75%)
+          if (progress > 0.45 && progress <= 0.75) {
+            const blastemaProg = (progress - 0.45) / 0.3;
+            blastemaPool.style.opacity = Math.min(blastemaProg * 1.5, 1);
+            blastemaPool.style.transform = `scale(${0.4 + (blastemaProg * 0.6)})`;
+            blastemaPool.style.transformOrigin = "215px 202px";
+            blastemaGlow.setAttribute('r', 10 + (blastemaProg * 14));
+            
+            statusTag.textContent = "STATUS: BLASTEMAL PROGENITOR EXPANSION";
+            statusTag.setAttribute('fill', 'var(--cell)');
+          } else if (progress <= 0.45) {
+            blastemaPool.style.opacity = 0;
+          } else {
+            blastemaPool.style.opacity = Math.max(0, 1 - ((progress - 0.75) / 0.25));
+          }
+
+          // 4. REGENERATING LIMB MORPHOGENESIS (75% to 100%)
+          if (progress > 0.72) {
+            const regenProg = (progress - 0.72) / 0.28;
+            regeneratingLimb.style.opacity = regenProg;
+            regeneratingLimb.style.transform = `scaleX(${regenProg})`;
+            regeneratingLimb.style.transformOrigin = "215px 202px";
+            statusTag.textContent = "STATUS: MORPHOGENESIS COMPLETE";
+            statusTag.setAttribute('fill', 'var(--cell)');
+          } else {
+            regeneratingLimb.style.opacity = 0;
+            regeneratingLimb.style.transform = "scaleX(0)";
+          }
+
+          // Windowed Opacity for Captions
+          captions.forEach(cap => {
+            const op = getWindowedOpacity(progress, cap.range[0], cap.range[1], cap.range[2], cap.range[3]);
+            cap.element.style.opacity = op;
+            cap.element.style.transform = `translateY(${(1 - op) * 15}px)`;
+            if (op > 0.1) {
+              cap.element.classList.add('active');
+            } else {
+              cap.element.classList.remove('active');
+            }
+          });
+        }
+
+        // Playback Controller Engine
+        let playbackProgress = 0;
+        let isPlaying = false;
+        let speedMultiplier = 1;
+        let lastTime = performance.now();
+        let animationFrameId = null;
+
+        const btnPlayPause = document.getElementById('btn-play-pause');
+        const playIcon = document.getElementById('play-icon');
+        const pauseIcon = document.getElementById('pause-icon');
+        const playText = document.getElementById('play-text');
+        const btnStepPrev = document.getElementById('btn-step-prev');
+        const btnStepNext = document.getElementById('btn-step-next');
+        const btnSpeed = document.getElementById('btn-speed');
+        const timelineSlider = document.getElementById('timeline-slider');
+        const badgeMode = document.getElementById('badge-playback-mode');
+
+        function setPlaybackMode(modeName, isAuto) {
+          if (badgeMode) {
+            badgeMode.textContent = `MODE: ${modeName}`;
+            if (isAuto) {
+              badgeMode.className = "bg-cell text-white px-1.5 py-0.5 border border-line uppercase font-semibold text-[8px]";
+            } else {
+              badgeMode.className = "bg-[#ecdccb]/50 px-1.5 py-0.5 border border-dashed border-line uppercase font-semibold text-[8px]";
+            }
+          }
+        }
+
+        function playLoop(now) {
+          if (!isPlaying) return;
+          const deltaSec = (now - lastTime) / 1000;
+          lastTime = now;
+
+          // Full cycle takes ~18 seconds at 1X speed
+          const cycleDuration = 18;
+          playbackProgress += (deltaSec / cycleDuration) * speedMultiplier;
+
+          if (playbackProgress >= 1) {
+            playbackProgress = 0; // Loop back
+          }
+
+          renderAnimationProgress(playbackProgress);
+          animationFrameId = requestAnimationFrame(playLoop);
+        }
+
+        if (btnPlayPause) {
+          btnPlayPause.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            if (isPlaying) {
+              if (playIcon) playIcon.classList.add('hidden');
+              if (pauseIcon) pauseIcon.classList.remove('hidden');
+              if (playText) playText.textContent = "PAUSE";
+              lastTime = performance.now();
+              setPlaybackMode("AUTOPLAYING", true);
+              animationFrameId = requestAnimationFrame(playLoop);
+            } else {
+              if (playIcon) playIcon.classList.remove('hidden');
+              if (pauseIcon) pauseIcon.classList.add('hidden');
+              if (playText) playText.textContent = "PLAY";
+              setPlaybackMode("PAUSED", false);
+              if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            }
+          });
+        }
+
+        if (btnStepPrev) {
+          btnStepPrev.addEventListener('click', () => {
+            isPlaying = false;
+            if (playIcon) playIcon.classList.remove('hidden');
+            if (pauseIcon) pauseIcon.classList.add('hidden');
+            if (playText) playText.textContent = "PLAY";
+            setPlaybackMode("MANUAL", false);
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+
+            playbackProgress = Math.max(0, playbackProgress - 0.05);
+            renderAnimationProgress(playbackProgress);
+          });
+        }
+
+        if (btnStepNext) {
+          btnStepNext.addEventListener('click', () => {
+            isPlaying = false;
+            if (playIcon) playIcon.classList.remove('hidden');
+            if (pauseIcon) pauseIcon.classList.add('hidden');
+            if (playText) playText.textContent = "PLAY";
+            setPlaybackMode("MANUAL", false);
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+
+            playbackProgress = Math.min(1, playbackProgress + 0.05);
+            renderAnimationProgress(playbackProgress);
+          });
+        }
+
+        const speeds = [0.5, 1, 1.5, 2];
+        let speedIdx = 1;
+        if (btnSpeed) {
+          btnSpeed.addEventListener('click', () => {
+            speedIdx = (speedIdx + 1) % speeds.length;
+            speedMultiplier = speeds[speedIdx];
+            btnSpeed.textContent = `SPEED: ${speedMultiplier}X`;
+          });
+        }
+
+        if (timelineSlider) {
+          timelineSlider.addEventListener('input', (e) => {
+            isPlaying = false;
+            if (playIcon) playIcon.classList.remove('hidden');
+            if (pauseIcon) pauseIcon.classList.add('hidden');
+            if (playText) playText.textContent = "PLAY";
+            setPlaybackMode("MANUAL", false);
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+
+            playbackProgress = parseFloat(e.target.value);
+            renderAnimationProgress(playbackProgress);
+          });
+        }
+
+        // GSAP ScrollTrigger Setup
+        ScrollTrigger.create({
+          trigger: "#scrolly-trigger",
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 0.5,
+          onUpdate: (self) => {
+            if (!isPlaying) {
+              playbackProgress = self.progress;
+              renderAnimationProgress(playbackProgress);
+              setPlaybackMode("SCROLLING", false);
+            }
+          }
+        });
+
+        // Initialize state
+        renderAnimationProgress(0);
+      } else {
+        // Fallback for prefers-reduced-motion
+        const captions = document.querySelectorAll('.caption-fade-box');
+        captions.forEach((cap) => {
+          cap.style.position = 'relative';
+          cap.style.opacity = '1';
+          cap.style.transform = 'none';
+          cap.classList.add('active');
+        });
+        
+        const triggerSec = document.getElementById('scrolly-trigger');
+        triggerSec.style.height = 'auto';
+        const stickySec = document.querySelector('.scrolly-sticky');
+        stickySec.style.position = 'relative';
+        stickySec.style.height = 'auto';
+      }
+    </script>
+  </body>
+</html>
