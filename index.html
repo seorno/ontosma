@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ontosma — Stem Cell, Developmental Biology & Regenerative Medicine Columns</title>
+    <!-- Tailwind Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              ink: 'var(--ink)',
+              panel: 'var(--panel)',
+              'panel-2': 'var(--panel-2)',
+              cell: 'var(--cell)',
+              'cell-soft': 'var(--cell-soft)',
+              fate: 'var(--fate)',
+              text: 'var(--text)',
+              muted: 'var(--muted)',
+              line: 'var(--line)',
+            },
+            fontFamily: {
+              sans: ['var(--font-sans)', '"Helvetica Neue"', 'Arial', 'sans-serif'],
+              serif: ['var(--font-serif)', 'Georgia', 'serif'],
+              mono: ['var(--font-mono)', '"Courier New"', 'Courier', 'monospace'],
+            }
+          }
+        }
+      }
+    </script>
+    <!-- Shared Brand Stylesheet -->
+    <link rel="stylesheet" href="./assets/style.css">
+    <style>
+      .topic-filter-btn.active {
+        background-color: var(--cell);
+        color: #ffffff;
+        border-color: var(--cell);
+      }
+    </style>
+  </head>
+  <body class="bg-ink text-text selection:bg-cell/30 selection:text-cell min-h-screen flex flex-col font-sans">
+    
+    <!-- Header Navigation -->
+    <header class="glass-header fixed top-0 left-0 w-full z-50">
+      <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <a id="nav-logo" href="./index.html" class="flex items-center gap-2 group">
+          <span class="font-serif text-xl md:text-2xl font-bold tracking-tight text-stone-900 group-hover:text-cell transition-colors uppercase">
+            Ontosma
+          </span>
+          <span class="w-2.5 h-2.5 bg-cell border border-stone-950"></span>
+        </a>
+        
+        <nav class="hidden md:flex items-center gap-8 font-mono text-sm tracking-wider">
+          <a id="nav-link-concepts" href="./concepts.html" class="text-muted hover:text-cell transition-colors py-2">CONCEPTS</a>
+          <a id="nav-link-about" href="#about" class="text-muted hover:text-cell transition-colors py-2">ABOUT</a>
+          <a id="nav-cta" href="#newsletter" class="btn-pill btn-pill-secondary py-2 px-5 text-xs">SUBSCRIBE</a>
+        </nav>
+
+        <!-- Mobile Nav Toggle Indicator -->
+        <button id="mobile-menu-toggle" class="md:hidden text-muted hover:text-cell p-2" aria-label="Toggle Menu">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Mobile Navigation Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 bg-ink z-40 flex-col justify-center items-center gap-8 font-mono text-lg tracking-widest hidden">
+      <button id="mobile-menu-close" class="absolute top-6 right-6 text-muted hover:text-cell p-2" aria-label="Close Menu">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      <a id="mobile-link-concepts" href="./concepts.html" class="text-muted hover:text-cell transition-colors">CONCEPTS</a>
+      <a id="mobile-link-about" href="#about" class="text-muted hover:text-cell transition-colors">ABOUT</a>
+    </div>
+
+    <!-- Main Content wrapper -->
+    <main class="flex-grow pt-20">
+      
+      <!-- HERO TITLE -->
+      <section id="columns-hero" class="relative py-16 md:py-20 px-6 overflow-hidden border-b border-line">
+        <div class="absolute inset-0 svg-bg-grid opacity-30 pointer-events-none"></div>
+        <div class="absolute w-[350px] h-[350px] rounded-full glowing-orb opacity-10 -left-10 -top-10 pointer-events-none"></div>
+        
+        <div class="max-w-4xl mx-auto text-center space-y-4 relative z-10">
+          <div class="inline-flex items-center gap-2 px-3 py-1 bg-cell/10 border border-cell/20 rounded-full">
+            <span class="font-mono text-[10px] tracking-widest text-cell uppercase font-bold">★ THE ONTOSMA JOURNAL</span>
+          </div>
+          <h1 class="text-3xl md:text-5xl lg:text-6xl text-stone-900 font-serif font-normal leading-tight">
+            Weekly Columns &amp; Deep-Dive Essays
+          </h1>
+          <p class="text-muted text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+            In-depth editorials synthesizing recent stem cell biology, developmental biology, and regenerative medicine research — with complete citation archives.
+          </p>
+        </div>
+      </section>
+
+      <!-- MAIN CONTENT SECTION -->
+      <section class="py-12 px-6">
+        <div class="max-w-6xl mx-auto space-y-10">
+          
+          <!-- Filter Controls -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-line pb-6">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[10px] uppercase text-muted font-bold tracking-wider">TOPIC FILTER:</span>
+              <div id="column-topic-filters" class="flex flex-wrap gap-2">
+                <!-- Dynamically populated topic filter buttons -->
+              </div>
+            </div>
+            <div class="font-mono text-xs text-stone-500 font-semibold" id="columns-count-label">
+              Showing 4 Essays
+            </div>
+          </div>
+
+          <!-- COLUMN READER VIEW (Initially Hidden) -->
+          <article id="column-reader" class="hidden space-y-8 bg-panel border border-line p-6 md:p-12 rounded-3xl shadow-sm relative">
+            <div class="flex items-center justify-between border-b border-line pb-6 flex-wrap gap-4">
+              <button onclick="closeColumnReader()" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-ink hover:bg-cell/10 border border-line hover:border-cell/30 text-cell font-mono text-xs font-bold transition-all">
+                <span>←</span> Back to Columns Feed
+              </button>
+              <div class="flex items-center gap-3 font-mono text-xs">
+                <span id="reader-column-code" class="text-cell font-bold bg-cell/10 border border-cell/20 px-3 py-1 rounded-md"></span>
+                <span id="reader-column-date" class="text-stone-600 font-semibold"></span>
+              </div>
+            </div>
+
+            <!-- Article Header -->
+            <div class="space-y-4 max-w-3xl mx-auto">
+              <div class="flex items-center gap-3 flex-wrap">
+                <span id="reader-column-topic" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cell text-white font-mono text-xs font-semibold uppercase"></span>
+                <span id="reader-column-readtime" class="font-mono text-xs text-muted bg-ink px-2.5 py-1 border border-line rounded-md font-semibold"></span>
+              </div>
+              
+              <h2 id="reader-column-title" class="font-serif text-3xl md:text-4xl lg:text-5xl text-stone-900 font-medium leading-tight"></h2>
+              
+              <div class="flex items-center gap-4 pt-2 border-t border-line/40 font-mono text-xs text-stone-600">
+                <span id="reader-column-author" class="font-bold text-stone-900"></span>
+                <span>•</span>
+                <span>Peer-Reviewed Dispatch</span>
+              </div>
+            </div>
+
+            <!-- Key Takeaway Callout -->
+            <div class="max-w-3xl mx-auto bg-cell/5 border-l-4 border-cell p-5 rounded-r-xl space-y-1">
+              <span class="font-mono text-[10px] uppercase font-bold text-cell tracking-wider">EDITORIAL SUMMARY</span>
+              <p id="reader-column-summary" class="text-stone-800 text-sm md:text-base font-serif italic leading-relaxed"></p>
+            </div>
+
+            <!-- Main Body Text -->
+            <div id="reader-column-body" class="max-w-3xl mx-auto space-y-6 text-stone-800 text-base md:text-lg leading-relaxed font-sans border-b border-line pb-8">
+              <!-- Formatted Essay Paragraphs -->
+            </div>
+
+            <!-- Citation Footnote -->
+            <div class="max-w-3xl mx-auto bg-ink p-6 rounded-2xl border border-line space-y-2">
+              <div class="font-mono text-xs font-bold text-stone-900 uppercase tracking-wider flex items-center gap-2">
+                <span>📚</span> Primary Literature Citation
+              </div>
+              <p id="reader-column-citation" class="font-mono text-xs text-stone-700 leading-relaxed"></p>
+              <div id="reader-column-doi" class="font-mono text-[11px] text-cell font-bold pt-1"></div>
+            </div>
+
+            <!-- Bottom Back Button -->
+            <div class="max-w-3xl mx-auto pt-4 text-center">
+              <button onclick="closeColumnReader()" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-stone-900 text-white hover:bg-cell transition-all font-mono text-xs font-bold uppercase tracking-wider">
+                <span>← Return to All Weekly Columns</span>
+              </button>
+            </div>
+          </article>
+
+          <!-- FEED CONTAINER (Stacked Chronological Essays) -->
+          <div id="columns-feed-container" class="space-y-8">
+            <!-- Dynamically Populated Column Essay Cards -->
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ABOUT SECTION -->
+      <section id="about" class="py-20 px-6 border-t border-line bg-ink relative overflow-hidden">
+        <div class="max-w-3xl mx-auto text-center space-y-5 relative z-10">
+          <span class="font-mono text-xs tracking-[0.2em] text-cell uppercase font-semibold">ABOUT</span>
+          <h2 class="font-serif text-3xl md:text-4xl text-stone-900 font-normal">
+            What Ontosma Is
+          </h2>
+          <p class="text-muted text-sm md:text-base leading-relaxed">
+            An independent editorial companion bringing rigorous, plain-language clarity to stem cell biology, developmental biology, and regenerative medicine. Each column synthesizes a small cluster of recent peer-reviewed and preprint papers — what's genuinely moving forward, what's useful, and what's still unproven.
+          </p>
+        </div>
+      </section>
+
+      <!-- SUBSCRIBE SECTION -->
+      <section id="newsletter" class="py-20 px-6 border-t border-line bg-panel relative overflow-hidden">
+        <div class="max-w-3xl mx-auto text-center space-y-8 relative z-10">
+          <div class="space-y-3">
+            <span class="font-mono text-xs tracking-[0.2em] text-cell uppercase font-semibold">WEEKLY ESSAY DISPATCH</span>
+            <h2 class="font-serif text-3xl md:text-4xl text-stone-900 font-normal">
+              Receive Long-Form Editorials Every Friday
+            </h2>
+            <p class="text-muted text-sm md:text-base leading-relaxed">
+              Subscribe to Ontosma to receive full-length editorials on stem cell biology, developmental biology, and regenerative medicine research directly in your inbox.
+            </p>
+          </div>
+
+          <form id="columns-form" class="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-lg mx-auto">
+            <input type="email" id="columns-email" required placeholder="Enter your academic or professional email..." class="w-full px-4 py-3 rounded-xl bg-ink border border-line focus:border-cell focus:outline-none font-mono text-xs text-stone-900 placeholder-stone-400">
+            <button type="submit" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-cell text-white font-mono text-xs font-bold uppercase tracking-wider hover:bg-opacity-90 transition-all shrink-0">
+              Subscribe Free
+            </button>
+          </form>
+
+          <div id="columns-toast" class="hidden p-4 rounded-xl bg-cell/10 border border-cell/30 text-cell font-mono text-xs font-semibold">
+            ✓ Thank you! You are now subscribed to the Ontosma Weekly Editorials.
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-ink border-t border-line py-16 px-6 mt-auto">
+      <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12">
+        
+        <!-- Column 1: Brand Info -->
+        <div class="md:col-span-6 space-y-4">
+          <div class="flex items-center gap-2">
+            <span class="font-serif text-lg font-bold tracking-tight text-stone-900 uppercase">Ontosma</span>
+            <span class="w-2 h-2 bg-cell border border-stone-950"></span>
+          </div>
+          <p class="text-muted text-sm leading-relaxed max-w-sm font-sans">
+            An independent educational companion and newsletter bringing rigorous, plain-language clarity to stem cell developmental biology and molecular/cellular science.
+          </p>
+        </div>
+
+        <!-- Column 2: Explore Links -->
+        <div class="md:col-span-3 space-y-4">
+          <h4 class="font-mono text-xs tracking-wider text-cell uppercase font-semibold">EXPLORE</h4>
+          <ul class="space-y-2 text-sm font-mono text-muted">
+            <li><a href="./index.html" class="hover:text-cell transition-colors">Homepage</a></li>
+            <li><a href="./concepts.html" class="hover:text-cell transition-colors">Concept Library</a></li>
+            <li><a href="./index.html#about" class="hover:text-cell transition-colors">About Us</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Elsewhere Links -->
+        <div class="md:col-span-3 space-y-4">
+          <h4 class="font-mono text-xs tracking-wider text-cell uppercase font-semibold">ELSEWHERE</h4>
+          <ul class="space-y-2 text-sm font-mono text-muted">
+            <li><a href="https://x.com" target="_blank" rel="noopener noreferrer" class="hover:text-cell transition-colors">X / Twitter</a></li>
+            <li><a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="hover:text-cell transition-colors">LinkedIn</a></li>
+            <li><a href="https://threads.net" target="_blank" rel="noopener noreferrer" class="hover:text-cell transition-colors">Threads</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="max-w-7xl mx-auto border-t border-line mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <span class="font-mono text-[10px] text-muted">
+          &copy; 2026 Ontosma. All rights reserved.
+        </span>
+        <span class="font-mono text-[10px] text-muted italic">
+          Deciphering the blueprints of growth and preservation.
+        </span>
+      </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC & MOCK DATA -->
+    <script>
+      // CENTRAL DATASET: LONG-FORM WEEKLY COLUMNS & EDITORIALS
+      const COLUMNS_DATA = [
+        // Leave empty or add your own live columns here when ready
+      ];
+
+      // GLOBAL STATE
+      let activeFilterTopic = "ALL";
+
+      // RENDER FUNCTIONS
+      function renderTopicFilters() {
+        const container = document.getElementById("column-topic-filters");
+        if (!container) return;
+
+        const topics = ["ALL", "Stem Cell Biology", "Developmental Biology", "Regenerative Medicine"];
+        
+        container.innerHTML = topics.map(t => {
+          const isActive = activeFilterTopic === t;
+          return `
+            <button onclick="setTopicFilter('${t}')" class="topic-filter-btn ${isActive ? 'active' : 'bg-panel text-stone-700 border-line hover:border-cell'} px-3.5 py-1.5 rounded-full border font-mono text-xs font-semibold transition-all touch-manipulation">
+              ${t}
+            </button>
+          `;
+        }).join('');
+      }
+
+      function setTopicFilter(topic) {
+        activeFilterTopic = topic;
+        renderTopicFilters();
+        renderColumnsFeed();
+      }
+
+      function renderColumnsFeed() {
+        const feedContainer = document.getElementById("columns-feed-container");
+        const countLabel = document.getElementById("columns-count-label");
+        if (!feedContainer) return;
+
+        const filtered = COLUMNS_DATA.filter(col => activeFilterTopic === "ALL" || col.topic === activeFilterTopic);
+
+        if (countLabel) {
+          countLabel.innerText = `Showing ${filtered.length} Essay${filtered.length === 1 ? '' : 's'}`;
+        }
+
+        if (filtered.length === 0) {
+          feedContainer.innerHTML = `<div class="p-12 text-center text-muted font-mono text-xs">No columns found for topic "${activeFilterTopic}".</div>`;
+          return;
+        }
+
+        feedContainer.innerHTML = filtered.map(col => `
+          <div class="bg-panel border border-line p-6 md:p-8 rounded-3xl space-y-5 shadow-sm hover:border-cell/40 transition-all duration-300 group">
+            
+            <div class="flex items-center justify-between border-b border-line/30 pb-3 flex-wrap gap-2 font-mono text-xs">
+              <div class="flex items-center gap-2">
+                <span class="text-cell font-bold bg-cell/10 border border-cell/20 px-3 py-0.5 rounded-full uppercase tracking-wider text-[10px]">
+                  ${col.code}
+                </span>
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-stone-900 text-white font-mono text-[9px] font-bold uppercase tracking-wider">
+                  <span>${col.topicIcon}</span> ${col.topic}
+                </span>
+              </div>
+              <div class="flex items-center gap-3 text-stone-500 font-semibold">
+                <span>${col.dateStr}</span>
+                <span>•</span>
+                <span class="bg-ink px-2 py-0.5 border border-line/30 rounded text-[10px]">${col.readTime}</span>
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="font-serif text-2xl md:text-3xl text-stone-900 font-medium leading-snug group-hover:text-cell transition-colors cursor-pointer" onclick="openColumnReader('${col.id}')">
+                ${col.title}
+              </h3>
+              <p class="font-mono text-xs text-cell font-bold">${col.author}</p>
+              <p class="text-stone-700 text-sm md:text-base leading-relaxed font-sans">
+                ${col.summary}
+              </p>
+            </div>
+
+            <div class="pt-2 border-t border-line/30 flex items-center justify-between flex-wrap gap-4">
+              <div class="font-mono text-[11px] text-muted truncate max-w-md">
+                <em>${col.citation}</em>
+              </div>
+              <button onclick="openColumnReader('${col.id}')" class="px-5 py-2.5 rounded-xl bg-ink hover:bg-cell/10 border border-line hover:border-cell/30 text-cell font-mono text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 shrink-0">
+                <span>Read Full Essay</span> ➔
+              </button>
+            </div>
+
+          </div>
+        `).join('');
+      }
+
+      function openColumnReader(columnId) {
+        const col = COLUMNS_DATA.find(c => c.id === columnId);
+        if (!col) return;
+
+        document.getElementById("reader-column-code").innerText = col.code;
+        document.getElementById("reader-column-date").innerText = col.dateStr;
+        document.getElementById("reader-column-topic").innerHTML = `<span>${col.topicIcon}</span> ${col.topic}`;
+        document.getElementById("reader-column-readtime").innerText = col.readTime;
+        document.getElementById("reader-column-title").innerText = col.title;
+        document.getElementById("reader-column-author").innerText = col.author;
+        document.getElementById("reader-column-summary").innerText = col.summary;
+        document.getElementById("reader-column-citation").innerText = col.citation;
+        document.getElementById("reader-column-doi").innerText = col.doi;
+
+        const bodyContainer = document.getElementById("reader-column-body");
+        bodyContainer.innerHTML = col.paragraphs.map((p, idx) => `
+          <p class="${idx === 0 ? 'first-letter:float-left first-letter:text-5xl first-letter:font-serif first-letter:pr-3 first-letter:font-bold first-letter:text-cell' : ''} leading-relaxed">
+            ${p}
+          </p>
+        `).join('');
+
+        document.getElementById("columns-feed-container").classList.add("hidden");
+        const reader = document.getElementById("column-reader");
+        reader.classList.remove("hidden");
+        reader.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      function closeColumnReader() {
+        document.getElementById("column-reader").classList.add("hidden");
+        document.getElementById("columns-feed-container").classList.remove("hidden");
+      }
+
+      window.setTopicFilter = setTopicFilter;
+      window.openColumnReader = openColumnReader;
+      window.closeColumnReader = closeColumnReader;
+
+      // DOM Content Loaded
+      window.addEventListener("DOMContentLoaded", () => {
+        renderTopicFilters();
+        renderColumnsFeed();
+
+        // Mobile Nav Handlers
+        const mobileToggle = document.getElementById('mobile-menu-toggle');
+        const mobileClose = document.getElementById('mobile-menu-close');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        if (mobileToggle && mobileClose && mobileMenu) {
+          mobileToggle.addEventListener('click', () => {
+            mobileMenu.classList.remove('hidden');
+            mobileMenu.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+          });
+
+          const closeMobile = () => {
+            mobileMenu.classList.add('hidden');
+            mobileMenu.classList.remove('flex');
+            document.body.style.overflow = '';
+          };
+
+          mobileClose.addEventListener('click', closeMobile);
+
+          const mobileLinks = mobileMenu.querySelectorAll('a');
+          mobileLinks.forEach(link => {
+            link.addEventListener('click', closeMobile);
+          });
+        }
+
+        // Subscription Form
+        const form = document.getElementById('columns-form');
+        const toast = document.getElementById('columns-toast');
+        if (form && toast) {
+          form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const emailInput = document.getElementById('columns-email');
+            if (emailInput && emailInput.value) {
+              toast.classList.remove('hidden');
+              emailInput.value = '';
+              setTimeout(() => toast.classList.add('hidden'), 4000);
+            }
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

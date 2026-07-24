@@ -1,0 +1,6 @@
+{
+  "name": "Ontosma",
+  "description": "An education brand explaining stem cell biology, developmental biology, and regenerative medicine through long-form columns and scroll-driven concept explainers.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
